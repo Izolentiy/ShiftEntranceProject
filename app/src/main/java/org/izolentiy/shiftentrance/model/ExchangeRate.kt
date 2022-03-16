@@ -2,7 +2,6 @@ package org.izolentiy.shiftentrance.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import java.util.*
 
 @Entity(tableName = "exchange_rates")

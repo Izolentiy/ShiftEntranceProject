@@ -2,7 +2,6 @@ package org.izolentiy.shiftentrance.model
 
 import androidx.room.TypeConverter
 import org.izolentiy.shiftentrance.DATE_FORMAT
-import java.text.SimpleDateFormat
 import java.util.*
 
 class DateConverter {

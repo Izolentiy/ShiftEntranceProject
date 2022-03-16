@@ -1,9 +1,8 @@
 package org.izolentiy.shiftentrance
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import org.izolentiy.shiftentrance.ui.CurrencyListFragment
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

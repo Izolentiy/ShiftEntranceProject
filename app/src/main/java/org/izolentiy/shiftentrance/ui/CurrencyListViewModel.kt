@@ -1,11 +1,12 @@
 package org.izolentiy.shiftentrance.ui
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.izolentiy.shiftentrance.model.Currency
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import org.izolentiy.shiftentrance.repository.Repository
 import javax.inject.Inject
