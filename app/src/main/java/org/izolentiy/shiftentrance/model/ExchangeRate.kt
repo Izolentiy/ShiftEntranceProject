@@ -11,6 +11,7 @@ data class ExchangeRate(
     val previousDate: String = "",
     val previousURL: String = "",
     val timestamp: String = "",
+    val loaded: Date = Date(),
     val currencies: List<Currency> = emptyList()
 )
 
