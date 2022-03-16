@@ -1,14 +1,12 @@
 package org.izolentiy.shiftentrance.ui
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.izolentiy.shiftentrance.model.Currency
+import org.izolentiy.shiftentrance.model.ExchangeRate
 import org.izolentiy.shiftentrance.repository.Repository
 import javax.inject.Inject
 
@@ -17,12 +15,10 @@ class CurrencyListViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-    private val _currencies = MutableLiveData<List<Currency>>()
-    val currencies: LiveData<List<Currency>> get() = _currencies
+    val exchangeRate: LiveData<ExchangeRate?> = repository.getExchangeRate().asLiveData()
 
-    fun fetchCurrencies() = viewModelScope.launch(Dispatchers.IO) {
-        _currencies.postValue(repository.fetchCurrencies())
-        Log.d(TAG, "fetchCurrencies: CURRENCIES_FETCHED")
+    fun reloadData() = viewModelScope.launch(Dispatchers.IO) {
+        repository.reloadDailyRate()
     }
 
     companion object {

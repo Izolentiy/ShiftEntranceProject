@@ -3,21 +3,16 @@ package org.izolentiy.shiftentrance.model
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import org.izolentiy.shiftentrance.DATE_FORMAT
 import java.lang.reflect.Type
 
-class ServerResponseDeserializer : JsonDeserializer<ServerResponse> {
+class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): ServerResponse {
-        val data = json?.asJsonObject ?: return ServerResponse(
-            date = "",
-            previousDate = "",
-            previousURL = "",
-            timestamp = "",
-            currencies = listOf()
-        )
+    ): ExchangeRate {
+        val data = json?.asJsonObject ?: return ExchangeRate()
         val valute = data.get("Valute").asJsonObject
         val currencies = mutableListOf<Currency>()
         for (currency in currencyList) {
@@ -33,8 +28,8 @@ class ServerResponseDeserializer : JsonDeserializer<ServerResponse> {
             )
             currencies.add(element)
         }
-        return ServerResponse(
-            date = data.get("Date").asString,
+        return ExchangeRate(
+            date = DATE_FORMAT.parse(data.get("Date").asString)!!,
             previousDate = data.get("PreviousDate").asString,
             previousURL = data.get("PreviousURL").asString,
             timestamp = data.get("Timestamp").asString,

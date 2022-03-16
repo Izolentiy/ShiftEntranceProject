@@ -1,6 +1,7 @@
 package org.izolentiy.shiftentrance.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +30,7 @@ class CurrencyListFragment : Fragment() {
         _binding = FragmentCurrencyListBinding.inflate(inflater, container, false)
         binding.apply {
             swipeRefreshLayout.setOnRefreshListener {
-                viewModel.fetchCurrencies()
+                viewModel.reloadData()
             }
             recyclerViewCurrencies.apply {
                 adapter = currencyAdapter
@@ -38,10 +39,10 @@ class CurrencyListFragment : Fragment() {
             }
         }
 
-        if (viewModel.currencies.value.isNullOrEmpty()) viewModel.fetchCurrencies()
-        viewModel.currencies.observe(viewLifecycleOwner) { currencies ->
-            currencyAdapter.submitList(currencies)
+        viewModel.exchangeRate.observe(viewLifecycleOwner) { rate ->
+            if (rate != null) currencyAdapter.submitList(rate.currencies)
             binding.swipeRefreshLayout.isRefreshing = false
+            Log.d(TAG, "onCreateView: CURRENCIES_SUBMITTED")
         }
 
         return binding.root
@@ -50,6 +51,10 @@ class CurrencyListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private val TAG = "${CurrencyListFragment::class.java.simpleName}_TAG"
     }
 
 }

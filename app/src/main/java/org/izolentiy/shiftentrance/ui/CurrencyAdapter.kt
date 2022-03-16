@@ -11,13 +11,16 @@ import org.izolentiy.shiftentrance.model.Currency
 import org.izolentiy.shiftentrance.databinding.ItemCurrencyBinding as Binding
 
 class CurrencyAdapter : ListAdapter<Currency, CurrencyAdapter.ViewHolder>(CurrencyComparator) {
-    inner class ViewHolder(private val binding: Binding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(currency: Currency) {
+    inner class ViewHolder(
+        private val binding: Binding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(currency: Currency) = with(currency) {
             binding.apply {
-                textViewCharCode.text = currency.charCode
-                textViewName.text = currency.name
-                textViewExchangeRate.text = binding.root.resources
-                    .getString(R.string.base_currency_format, currency.value, BASE_CURRENCY)
+                textViewNominalCharCode.text = root.resources
+                    .getString(R.string.currency_format, charCode, nominal)
+                textViewName.text = name
+                textViewExchangeRate.text = root.resources
+                    .getString(R.string.base_currency_format, value, BASE_CURRENCY)
             }
         }
     }
