@@ -66,4 +66,8 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
+    // To display currency exchange rate chart
+    implementation "com.github.PhilJay:MPAndroidChart:v3.1.0"
+
+
 }

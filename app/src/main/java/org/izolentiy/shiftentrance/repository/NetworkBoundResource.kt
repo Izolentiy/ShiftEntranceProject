@@ -18,7 +18,7 @@ fun <T> networkBoundResource(
                 Log.d(TAG, "networkBoundResource: FETCHED_AND_LOADED")
                 flowOf(Resource.success(data))
             } catch (throwable: Throwable) {
-                Log.d(TAG, "networkBoundResource: FETCHING_ERROR $throwable")
+                Log.e(TAG, "networkBoundResource: FETCHING_ERROR $throwable")
                 flowOf(Resource.error(throwable, data))
             }
         } else {

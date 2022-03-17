@@ -30,7 +30,7 @@ class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
         }
         return ExchangeRate(
             date = DATE_FORMAT.parse(data.get("Date").asString)!!,
-            previousDate = data.get("PreviousDate").asString,
+            previousDate = DATE_FORMAT.parse(data.get("PreviousDate").asString)!!,
             previousURL = data.get("PreviousURL").asString,
             timestamp = data.get("Timestamp").asString,
             currencies = currencies
