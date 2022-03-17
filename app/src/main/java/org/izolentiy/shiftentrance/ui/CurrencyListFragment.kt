@@ -17,6 +17,8 @@ import org.izolentiy.shiftentrance.MESSAGE_TIMEOUT
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyListBinding
 import org.izolentiy.shiftentrance.model.Currency
+import org.izolentiy.shiftentrance.model.ExchangeRate
+import org.izolentiy.shiftentrance.repository.Resource
 import org.izolentiy.shiftentrance.ui.CurrencyFragment.Companion.CHAR_CODE
 import org.izolentiy.shiftentrance.ui.CurrencyFragment.Companion.RATE
 
@@ -26,6 +28,7 @@ class CurrencyListFragment : Fragment() {
     private var _binding: FragmentCurrencyListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CurrencyListViewModel by viewModels()
+    private var errorShowedOnce = false
 
     private val onCurrencyClick: (Currency) -> Unit = { currency ->
         Log.d(TAG, "${currency.charCode}: is clicked")
@@ -49,6 +52,7 @@ class CurrencyListFragment : Fragment() {
         binding.apply {
             swipeRefreshLayout.setOnRefreshListener {
                 viewModel.reloadData()
+                errorShowedOnce = false
             }
             recyclerViewCurrencies.apply {
                 adapter = currencyAdapter
@@ -57,15 +61,8 @@ class CurrencyListFragment : Fragment() {
             }
         }
 
-        viewModel.exchangeRate.observe(viewLifecycleOwner) { rate ->
-            if (rate != null) {
-                currencyAdapter.submitList(rate.currencies)
-
-                val message = getString(R.string.data_loaded, MESSAGE_FORMAT.format(rate.loaded))
-                showSnackBar(message, MESSAGE_TIMEOUT)
-            }
-            binding.swipeRefreshLayout.isRefreshing = false
-            Log.d(TAG, "onCreateView: CURRENCIES_SUBMITTED")
+        viewModel.exchangeRate.observe(viewLifecycleOwner) { resource ->
+            handleResource(resource, currencyAdapter)
         }
 
         return binding.root
@@ -76,11 +73,52 @@ class CurrencyListFragment : Fragment() {
         _binding = null
     }
 
-    private fun showSnackBar(message: String, time: Int) {
-        Snackbar.make(
-            activity?.findViewById(R.id.fragment_container)!!,
-            message, time
-        ).show()
+    private fun handleResource(result: Resource<ExchangeRate?>, adapter: CurrencyAdapter) {
+        val rate = result.data
+        when (result.status) {
+            Resource.Status.ERROR -> {
+                if (!errorShowedOnce) {
+                    errorShowedOnce = true
+                    val message = result.error?.message!!
+                    showSnackBar(message, Snackbar.LENGTH_INDEFINITE, true)
+                } else if (rate != null) {
+                    val message =
+                        getString(R.string.data_loaded, MESSAGE_FORMAT.format(rate.loaded))
+                    showSnackBar(message, MESSAGE_TIMEOUT, false)
+                } else {
+                    val message = getString(R.string.empty_data)
+                    showSnackBar(message, Snackbar.LENGTH_INDEFINITE, false)
+                }
+                Log.e(TAG, "handleResource: ERROR")
+            }
+            Resource.Status.LOADING -> {
+                Log.e(TAG, "handleResource: LOADING")
+            }
+            Resource.Status.SUCCESS -> {
+                val message = if (rate != null)
+                    getString(R.string.data_loaded, MESSAGE_FORMAT.format(rate.loaded))
+                else getString(R.string.empty_data)
+
+                Log.e(TAG, "handleResource: SUCCESS")
+                showSnackBar(message, MESSAGE_TIMEOUT, false)
+            }
+        }
+        if (rate != null)
+            processData(rate, adapter)
+        binding.swipeRefreshLayout.isRefreshing = false
+        Log.d(TAG, "onCreateView: CURRENCIES_SUBMITTED")
+    }
+
+    private fun processData(rate: ExchangeRate, adapter: CurrencyAdapter) {
+        adapter.submitList(rate.currencies)
+    }
+
+    private fun showSnackBar(message: String, time: Int, isError: Boolean) {
+        val view = activity?.findViewById<View>(R.id.fragment_container)!!
+        val snackbar: Snackbar = Snackbar.make(view, message, time)
+
+        if (isError) snackbar.setAction("OK", {})
+        snackbar.show()
     }
 
     companion object {
