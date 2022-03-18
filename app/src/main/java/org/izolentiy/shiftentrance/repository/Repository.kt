@@ -16,55 +16,25 @@ class Repository @Inject constructor(
     private val service: CbrService
 ) {
 
-    private val reloadErrorFlow = MutableStateFlow<Resource<ExchangeRate?>?>(null)
+    private val reloadResource = MutableStateFlow<Resource<ExchangeRate?>?>(null)
 
     fun getExchangeRate(): Flow<Resource<ExchangeRate?>> = networkBoundResource(
-        loadFromDb = {
-            Log.i(TAG, "getExchangeRate: loadFromDb")
-            exchangeRateDao.getExchangeRates().map { rates -> rates.firstOrNull() }
-        },
-        shouldFetch = { rate ->
-            val predicate = rate == null || rate.currencies.isNullOrEmpty()
-            Log.i(TAG, "getExchangeRate: shouldFetch $predicate")
-            rate == null || rate.currencies.isNullOrEmpty()
-        },
-        fetchFromNet = {
-            Log.i(TAG, "getExchangeRate: fetchFromNet")
-            fetchDailyRate()
-        },
-        saveFetchResult = { rate ->
-            Log.i(TAG, "getExchangeRate: saveFetchResult")
-            exchangeRateDao.insertExchangeRates(rate!!)
-        }
-    ).combine(reloadErrorFlow) { boundResource, reload ->
-        Log.d(TAG, "getExchangeRate: COMBINATION_START")
-        if (reload?.status == Resource.Status.ERROR) {
-            Log.d(TAG, "getExchangeRate: RELOAD_ERROR")
-            Resource.error(reload.error!!, boundResource.data)
-        } else {
-            when (boundResource.status) {
-                Resource.Status.LOADING -> {
-                    Log.d(TAG, "getExchangeRate: LOADING")
-                    Resource.loading(boundResource.data)
-                }
-                Resource.Status.SUCCESS -> {
-                    Log.d(TAG, "getExchangeRate: SUCCESS")
-                    Resource.success(boundResource.data)
-                }
-                Resource.Status.ERROR -> {
-                    Log.d(TAG, "getExchangeRate: ERROR")
-                    Resource.error(boundResource.error!!, boundResource.data)
-                }
-            }
-        }
+        loadFromDb = { exchangeRateDao.getExchangeRates().map { rates -> rates.firstOrNull() } },
+        shouldFetch = { rate -> rate == null || rate.currencies.isNullOrEmpty() },
+        fetchFromNet = { fetchDailyRate() },
+        saveFetchResult = { rate -> exchangeRateDao.insertExchangeRates(rate!!) }
+    ).combine(reloadResource) { networkBound, reload ->
+        if (reload?.status == Resource.Status.ERROR)
+            Resource.error(reload.error!!, networkBound.data)
+        else networkBound
     }
 
     suspend fun reloadDailyRate() = try {
         val result = fetchDailyRate()
         exchangeRateDao.insertExchangeRates(result)
-        reloadErrorFlow.value = Resource.success(null)
+        reloadResource.value = Resource.success(result)
     } catch (throwable: Throwable) {
-        reloadErrorFlow.value = Resource.error(throwable)
+        reloadResource.value = Resource.error(throwable)
     }
 
     suspend fun loadLatestRates(count: Int) {
