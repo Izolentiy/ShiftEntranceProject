@@ -13,7 +13,7 @@ class Repository @Inject constructor(
     private val service: CbrService
 ) {
 
-    private val reloadErrorFlow = MutableStateFlow<Resource<ExchangeRate?>?>(null)
+    private val reloadResource = MutableStateFlow<Resource<ExchangeRate?>?>(null)
 
     fun getExchangeRate(): Flow<Resource<ExchangeRate?>> = networkBoundResource(
         loadFromDb = {
@@ -33,35 +33,24 @@ class Repository @Inject constructor(
             Log.i(TAG, "getExchangeRate: saveFetchResult")
             exchangeRateDao.insertExchangeRates(rate!!)
         }
-    ).combine(reloadErrorFlow) { boundResource, reload ->
+    ).combine(reloadResource) { boundResource, reload ->
         Log.d(TAG, "getExchangeRate: COMBINATION_START")
         if (reload?.status == Resource.Status.ERROR) {
             Log.d(TAG, "getExchangeRate: RELOAD_ERROR")
             Resource.error(reload.error!!, boundResource.data)
         } else {
-            when (boundResource.status) {
-                Resource.Status.LOADING -> {
-                    Log.d(TAG, "getExchangeRate: LOADING")
-                    Resource.loading(boundResource.data)
-                }
-                Resource.Status.SUCCESS -> {
-                    Log.d(TAG, "getExchangeRate: SUCCESS")
-                    Resource.success(boundResource.data)
-                }
-                Resource.Status.ERROR -> {
-                    Log.d(TAG, "getExchangeRate: ERROR")
-                    Resource.error(boundResource.error!!, boundResource.data)
-                }
-            }
+            Log.d(TAG, "getExchangeRate: RELOAD_RESOURCE_STATUS ${reload?.status ?: "[]"}")
+            Log.d(TAG, "getExchangeRate: BOUND_RESOURCE_STATUS ${boundResource.status}")
+            boundResource
         }
     }
 
     suspend fun reloadDailyRate() = try {
         val result = fetchDailyRate()
         exchangeRateDao.insertExchangeRates(result)
-        reloadErrorFlow.value = Resource.success(null)
+        reloadResource.value = Resource.success(null)
     } catch (throwable: Throwable) {
-        reloadErrorFlow.value = Resource.error(throwable)
+        reloadResource.value = Resource.error(throwable)
     }
 
     private suspend fun fetchDailyRate(): ExchangeRate {
