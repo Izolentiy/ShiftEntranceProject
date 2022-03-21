@@ -1,11 +1,9 @@
 package org.izolentiy.shiftentrance.repository
 
 import android.util.Log
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.izolentiy.shiftentrance.DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import java.util.*
@@ -16,39 +14,43 @@ class Repository @Inject constructor(
     private val service: CbrService
 ) {
 
-    private val reloadResource = MutableStateFlow<Resource<ExchangeRate?>?>(null)
+    private var shouldReload = false
+    private val reloadTrigger = MutableSharedFlow<Unit>(
+        replay = 1, extraBufferCapacity = 0, BufferOverflow.DROP_OLDEST
+    ).also { it.tryEmit(Unit) }
 
-    fun getExchangeRate(): Flow<Resource<ExchangeRate?>> = networkBoundResource(
-        loadFromDb = { exchangeRateDao.getExchangeRates().map { rates -> rates.firstOrNull() } },
-        shouldFetch = { rate -> rate == null || rate.currencies.isNullOrEmpty() },
-        fetchFromNet = { fetchDailyRate() },
-        saveFetchResult = { rate -> exchangeRateDao.insertExchangeRates(rate!!) }
-    ).combine(reloadResource) { networkBound, reload ->
-        if (reload?.status == Resource.Status.ERROR)
-            Resource.error(reload.error!!, networkBound.data)
-        else networkBound
+    val exchangeRate: Flow<Resource<out ExchangeRate?>> = flow {
+        reloadTrigger.collect {
+            Log.i(TAG, "exchangeRate: RELOAD TRIGGERED")
+            emit(Resource.loading(null))
+            emit(loadExchangeRate(shouldReload))
+            shouldReload = false
+            Log.i(TAG, "exchangeRate: RELOAD COMPLETED")
+        }
+    }.catch {
+        emit(Resource.error(Throwable("Error while loading from database")))
     }
 
-    suspend fun reloadDailyRate() = try {
-        val result = fetchDailyRate()
-        exchangeRateDao.insertExchangeRates(result)
-        reloadResource.value = Resource.success(result)
-    } catch (throwable: Throwable) {
-        reloadResource.value = Resource.error(throwable)
+    suspend fun reloadRate() {
+        shouldReload = true
+        reloadTrigger.emit(Unit)
     }
 
-    suspend fun loadLatestRates(count: Int) {
-        // Get latest rate. Check if it is not null, if so fetch from network latest
-        // Get date of previous rate. Check if in DB exists this rate, else it is not, fetch it
-        // API RESTRICTIONS: less than 5 requests per second, 120 requests per minute.
+    suspend fun loadLatestRates(count: Int) = try {
+        // Get latest rate. Check if it is not null, if so fetch from network latest.
         val inLocal = exchangeRateDao.getLatestRate()
-        val latestRate = inLocal ?: fetchDailyRate()
+        val latestRate = inLocal
+            ?: service.getDailyRate().body()
+            ?: throw Throwable("Fetch result is null")
+
+        // Get date of previous rate.
         var previousURL = latestRate.previousURL
         var previousDate = latestRate.previousDate
 
         val rates = mutableListOf<ExchangeRate>()
-        for (i in 1..count) {
+        repeat(count) { i ->
             Log.i(TAG, "loadLastRates: $i")
+            // Check if in DB exists this rate, else if it is not, fetch it.
             val previousRate = loadPrevRate(previousDate, previousURL)
             rates.add(previousRate)
 
@@ -62,6 +64,8 @@ class Repository @Inject constructor(
                 exchangeRateDao.insertExchangeRates(rate)
             }
         }
+    } catch (exception: Throwable) {
+        Log.e(TAG, "loadLatestRates: $exception", exception)
     }
 
     private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate = try {
@@ -82,14 +86,25 @@ class Repository @Inject constructor(
         ExchangeRate()
     }
 
-    private suspend fun fetchDailyRate(): ExchangeRate = try {
-        val response = service.getDailyRate()
-        if (response.isSuccessful) response.body()!!
-        else ExchangeRate()
-    } catch (error: Throwable) {
-        Log.e(TAG, "fetchDailyRate: ${error.message}", error)
-        ExchangeRate()
-    }
+    private suspend fun loadExchangeRate(fetch: Boolean) = networkBoundResourceSus(
+        loadFromDb = {
+            Log.i(TAG, "loadExchangeRate: loadFromDb{}")
+            exchangeRateDao.getLatestRate()
+        },
+        shouldFetch = { rate ->
+            val predicate = rate == null || rate.currencies.isNullOrEmpty()
+            Log.i(TAG, "loadExchangeRate: shouldFetch{}: $fetch or $predicate")
+            fetch || predicate
+        },
+        fetchFromNet = {
+            Log.i(TAG, "loadExchangeRate: fetchFromNet{}")
+            service.getDailyRate().body()
+        },
+        saveFetchResult = { rate ->
+            Log.i(TAG, "loadExchangeRate: saveFetchResult{}")
+            if (rate != null) exchangeRateDao.insertExchangeRates(rate)
+        }
+    )
 
     companion object {
         private val TAG = "${Repository::class.java.simpleName}_TAG"

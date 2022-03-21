@@ -1,31 +1,27 @@
 package org.izolentiy.shiftentrance.repository
 
 import android.util.Log
-import kotlinx.coroutines.flow.*
 
-fun <T> networkBoundResource(
-    loadFromDb: () -> Flow<T>,
+suspend fun <T> networkBoundResourceSus(
+    loadFromDb: () -> T,
     shouldFetch: (T) -> Boolean = { true },
     fetchFromNet: suspend (T) -> T,
     saveFetchResult: suspend (T) -> Unit
-) = flow {
-    loadFromDb().collect { data ->
-        val flow: Flow<Resource<T>> = if (shouldFetch(data)) {
-            emit(Resource.loading(data))
-            Log.d(TAG, "networkBoundResource: LOADING")
-            try {
-                saveFetchResult(fetchFromNet(data))
-                Log.d(TAG, "networkBoundResource: FETCHED_AND_LOADED")
-                flowOf(Resource.success(data))
-            } catch (throwable: Throwable) {
-                Log.e(TAG, "networkBoundResource: FETCHING_ERROR $throwable")
-                flowOf(Resource.error(throwable, data))
-            }
-        } else {
-            Log.d(TAG, "networkBoundResource: NO_NEED_TO_FETCH")
-            flowOf(Resource.success(data))
+): Resource<T> {
+    val dataFromDb = loadFromDb()
+    return if (shouldFetch(dataFromDb)) {
+        try {
+            val dataFromNet = fetchFromNet(dataFromDb) ?: throw Throwable("Empty fetch result")
+            saveFetchResult(dataFromNet)
+            Log.d(TAG, "networkBoundResource: FETCHED_AND_LOADED")
+            Resource.success(dataFromNet)
+        } catch (exception: Throwable) {
+            Log.e(TAG, "networkBoundResource: FETCHING_ERROR $exception")
+            Resource.error(exception, dataFromDb)
         }
-        emitAll(flow)
+    } else {
+        Log.d(TAG, "networkBoundResource: NO_NEED_TO_FETCH")
+        Resource.success(dataFromDb)
     }
 }
 

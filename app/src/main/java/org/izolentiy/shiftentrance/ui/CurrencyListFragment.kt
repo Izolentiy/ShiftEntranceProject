@@ -73,7 +73,7 @@ class CurrencyListFragment : Fragment() {
         _binding = null
     }
 
-    private fun handleResource(result: Resource<ExchangeRate?>, adapter: CurrencyAdapter) {
+    private fun handleResource(result: Resource<out ExchangeRate?>, adapter: CurrencyAdapter) {
         val rate = result.data
         when (result.status) {
             Resource.Status.ERROR -> {
