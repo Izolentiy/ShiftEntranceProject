@@ -1,7 +1,6 @@
 package org.izolentiy.shiftentrance.ui
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,25 +11,17 @@ import android.widget.EditText
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.github.mikephil.charting.charts.Chart
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import org.izolentiy.shiftentrance.BASE_CURRENCY
 import org.izolentiy.shiftentrance.DATE_FORMAT
-import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyBinding
 import org.izolentiy.shiftentrance.model.ExchangeRate
-import org.izolentiy.shiftentrance.toStringDate
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
-
 
 @AndroidEntryPoint
 class CurrencyFragment : Fragment() {
@@ -132,48 +123,6 @@ class CurrencyFragment : Fragment() {
         }
     }
 
-    private fun configureLineChart(lineChart: LineChart) {
-        lineChart.apply {
-            setExtraOffsets(0f, 12f, 12f, 12f)
-            setDrawBorders(true)
-            setBorderWidth(0.6f)
-
-            description = Description().apply { text = "" }
-
-            xAxis.apply {
-                yOffset = 12f
-                textSize = 12f
-                valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float) = value.toStringDate()
-                }
-                setDrawGridLines(false)
-                setDrawAxisLine(false)
-            }
-
-            axisLeft.apply {
-                xOffset = 16f
-                textSize = 12f
-                setDrawGridLines(false)
-                setDrawAxisLine(false)
-            }
-            axisRight.apply {
-                setDrawGridLines(false)
-                setDrawAxisLine(false)
-                setDrawLabels(false)
-            }
-
-            getPaint(Chart.PAINT_INFO).apply {
-                textSize = 50f
-                color = Color.DKGRAY
-            }
-
-            legend.apply {
-                textSize = 12f
-                form = Legend.LegendForm.CIRCLE
-            }
-        }
-    }
-
     private fun prepareData(rateList: List<ExchangeRate>): LineData? {
         val entries = if (rateList.isEmpty()) null
         else rateList.reversed().map { rate ->
@@ -187,17 +136,7 @@ class CurrencyFragment : Fragment() {
 
         return if (!entries.isNullOrEmpty()) {
             val label = "$nominal $charCode  >>  $BASE_CURRENCY"
-            val lineDataSet = LineDataSet(entries, label).apply {
-                circleRadius = 4f
-                lineWidth = 2f
-                valueTextSize = 12f
-                color = resources.getColor(R.color.purple_200, context?.theme)
-                fillColor = color
-                setCircleColor(color)
-                setDrawCircles(true)
-                setDrawFilled(true)
-            }
-            LineData(lineDataSet)
+            LineData(preparedDataSet(requireContext(), LineDataSet(entries, label), resources))
         } else null
     }
 

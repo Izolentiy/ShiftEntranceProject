@@ -34,6 +34,7 @@ class Repository @Inject constructor(
         loadingTrigger.emit(Unit)
     }
 
+    // TODO: loadLatestRates() return Flow<Resource<List<ExchangeRate?>?>
     suspend fun loadLatestRates(count: Int): List<ExchangeRate>? = try {
         // Get latest rate. Check if it is not null, if so fetch from network latest.
         val inLocal = exchangeRateDao.getLatestRate()
@@ -64,6 +65,7 @@ class Repository @Inject constructor(
         null
     }
 
+    // TODO: loadPrevRate() return Resource<ExchangeRate?>
     private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate? {
         val formatted = DATE_FORMAT.format(date)
         Log.i(TAG, "loadPrevRate: url = $url, date = $formatted")
