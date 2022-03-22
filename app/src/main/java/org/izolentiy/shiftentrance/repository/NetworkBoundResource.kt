@@ -1,6 +1,7 @@
 package org.izolentiy.shiftentrance.repository
 
 import android.util.Log
+import java.net.UnknownHostException
 
 suspend fun <T> networkBoundResourceSus(
     loadFromDb: () -> T,

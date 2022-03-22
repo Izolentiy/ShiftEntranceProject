@@ -1,13 +1,13 @@
 package org.izolentiy.shiftentrance.repository
 
 import android.util.Log
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.izolentiy.shiftentrance.DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import java.util.*
 import javax.inject.Inject
+import kotlin.contracts.ContractBuilder
 
 class Repository @Inject constructor(
     private val exchangeRateDao: ExchangeRatesDao,
@@ -15,17 +15,15 @@ class Repository @Inject constructor(
 ) {
 
     private var shouldReload = false
-    private val reloadTrigger = MutableSharedFlow<Unit>(
-        replay = 1, extraBufferCapacity = 0, BufferOverflow.DROP_OLDEST
-    ).also { it.tryEmit(Unit) }
+    private val loadingTrigger = MutableSharedFlow<Unit>(replay = 1).also { it.tryEmit(Unit) }
 
     val exchangeRate: Flow<Resource<out ExchangeRate?>> = flow {
-        reloadTrigger.collect {
-            Log.i(TAG, "exchangeRate: RELOAD TRIGGERED")
+        loadingTrigger.collect {
+            Log.w(TAG, "exchangeRate: LOADING TRIGGERED")
             emit(Resource.loading(null))
             emit(loadExchangeRate(shouldReload))
             shouldReload = false
-            Log.i(TAG, "exchangeRate: RELOAD COMPLETED")
+            Log.w(TAG, "exchangeRate: LOADING COMPLETED")
         }
     }.catch {
         emit(Resource.error(Throwable("Error while loading from database")))
@@ -33,7 +31,7 @@ class Repository @Inject constructor(
 
     suspend fun reloadRate() {
         shouldReload = true
-        reloadTrigger.emit(Unit)
+        loadingTrigger.emit(Unit)
     }
 
     suspend fun loadLatestRates(count: Int) = try {
@@ -52,6 +50,7 @@ class Repository @Inject constructor(
             Log.i(TAG, "loadLastRates: $i")
             // Check if in DB exists this rate, else if it is not, fetch it.
             val previousRate = loadPrevRate(previousDate, previousURL)
+                ?: throw Throwable("Loading previous rate returned null")
             rates.add(previousRate)
 
             previousURL = previousRate.previousURL
@@ -65,25 +64,14 @@ class Repository @Inject constructor(
             }
         }
     } catch (exception: Throwable) {
-        Log.e(TAG, "loadLatestRates: $exception", exception)
+        Log.e(TAG, "loadLatestRates: ${exception.message}", exception)
     }
 
-    private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate = try {
+    private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate? {
         val formatted = DATE_FORMAT.format(date)
         Log.i(TAG, "fetchRateByUrl: FETCH_RATE_BY_URL $url $formatted")
 
-        val rateInLocal = exchangeRateDao.getExchangeRateByDate(date)
-        if (rateInLocal != null) rateInLocal
-        else {
-            val response = service.getExchangeByUrl(url)
-            val rateFromNet = response.body()
-
-            if (response.isSuccessful) rateFromNet!!
-            else ExchangeRate()
-        }
-    } catch (error: Throwable) {
-        Log.e(TAG, "fetchRateByUrl: ${error.message}", error)
-        ExchangeRate()
+        return exchangeRateDao.getExchangeRateByDate(date) ?: service.getExchangeByUrl(url).body()
     }
 
     private suspend fun loadExchangeRate(fetch: Boolean) = networkBoundResourceSus(

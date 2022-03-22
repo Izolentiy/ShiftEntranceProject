@@ -16,15 +16,15 @@ class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
         val valute = data.get("Valute").asJsonObject
         val currencies = mutableListOf<Currency>()
         for (currency in currencyList) {
-            val obj = valute.get(currency).asJsonObject
+            val jsonCurrency = valute.get(currency).asJsonObject
             val element = Currency(
-                id = obj.asJsonObject.get("ID").asString,
-                numCode = obj.asJsonObject.get("NumCode").asString,
-                charCode = obj.asJsonObject.get("CharCode").asString,
-                nominal = obj.asJsonObject.get("Nominal").asInt,
-                name = obj.asJsonObject.get("Name").asString,
-                value = obj.asJsonObject.get("Value").asDouble,
-                previous = obj.asJsonObject.get("Previous").asDouble
+                id = jsonCurrency.get("ID").asString,
+                numCode = jsonCurrency.get("NumCode").asString,
+                charCode = jsonCurrency.get("CharCode").asString,
+                nominal = jsonCurrency.get("Nominal").asInt,
+                name = jsonCurrency.get("Name").asString,
+                value = jsonCurrency.get("Value").asDouble,
+                previous = jsonCurrency.get("Previous").asDouble
             )
             currencies.add(element)
         }

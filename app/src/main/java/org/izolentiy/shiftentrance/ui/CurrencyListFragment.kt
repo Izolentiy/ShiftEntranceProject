@@ -79,7 +79,7 @@ class CurrencyListFragment : Fragment() {
             Resource.Status.ERROR -> {
                 if (!errorShowedOnce) {
                     errorShowedOnce = true
-                    val message = result.error?.message!!
+                    val message = getString(R.string.unable_to_download)
                     showSnackBar(message, Snackbar.LENGTH_INDEFINITE, true)
                 } else if (rate != null) {
                     val message =
@@ -117,7 +117,18 @@ class CurrencyListFragment : Fragment() {
         val view = activity?.findViewById<View>(R.id.fragment_container)!!
         val snackbar: Snackbar = Snackbar.make(view, message, time)
 
-        if (isError) snackbar.setAction("OK", {})
+        if (isError) snackbar.setAction("OK") {
+            val latestRate = viewModel.exchangeRate.value?.data
+            Log.e(TAG, "showSnackBar: latestRate $latestRate")
+            if (latestRate?.currencies?.isNotEmpty() == true) {
+                val stringRes = R.string.local_data_loaded
+                val msg = getString(stringRes, MESSAGE_FORMAT.format(latestRate.loaded))
+                showSnackBar(msg, MESSAGE_TIMEOUT, false)
+            } else {
+                val msg = getString(R.string.empty_data)
+                showSnackBar(msg, Snackbar.LENGTH_INDEFINITE, false)
+            }
+        }
         snackbar.show()
     }
 
