@@ -34,7 +34,7 @@ class Repository @Inject constructor(
         loadingTrigger.emit(Unit)
     }
 
-    suspend fun loadLatestRates(count: Int) = try {
+    suspend fun loadLatestRates(count: Int): List<ExchangeRate>? = try {
         // Get latest rate. Check if it is not null, if so fetch from network latest.
         val inLocal = exchangeRateDao.getLatestRate()
         val latestRate = inLocal
@@ -46,32 +46,33 @@ class Repository @Inject constructor(
         var previousDate = latestRate.previousDate
 
         val rates = mutableListOf<ExchangeRate>()
-        repeat(count) { i ->
+        rates.add(latestRate)
+        repeat(count - 1) { i ->
             Log.i(TAG, "loadLastRates: $i")
             // Check if in DB exists this rate, else if it is not, fetch it.
             val previousRate = loadPrevRate(previousDate, previousURL)
                 ?: throw Throwable("Loading previous rate returned null")
             rates.add(previousRate)
+            Log.i(TAG, "loadLatestRates: ${DATE_FORMAT.format(previousRate.date)}")
 
             previousURL = previousRate.previousURL
             previousDate = previousRate.previousDate
-            delay(1000)  // API RESTRICTION! Make 3 api calls per second
         }
-        rates.forEach { rate ->
-            if (rate.date != rate.previousDate || rate.timestamp != "") {
-                Log.w(TAG, "loadLatestRates: ${DATE_FORMAT.format(rate.date)}")
-                exchangeRateDao.insertExchangeRates(rate)
-            }
-        }
+        rates
     } catch (exception: Throwable) {
         Log.e(TAG, "loadLatestRates: ${exception.message}", exception)
+        null
     }
 
     private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate? {
         val formatted = DATE_FORMAT.format(date)
-        Log.i(TAG, "fetchRateByUrl: FETCH_RATE_BY_URL $url $formatted")
-
-        return exchangeRateDao.getExchangeRateByDate(date) ?: service.getExchangeByUrl(url).body()
+        Log.i(TAG, "loadPrevRate: url = $url, date = $formatted")
+        val result = exchangeRateDao.getExchangeRateByDate(date) ?:
+            service.getExchangeByUrl(url).body().also { rate ->
+                if (rate != null) exchangeRateDao.insertExchangeRates(rate)
+                delay(340)  // API RESTRICTION! Make 3 api calls per second
+            }
+        return result
     }
 
     private suspend fun loadExchangeRate(fetch: Boolean) = networkBoundResourceSus(

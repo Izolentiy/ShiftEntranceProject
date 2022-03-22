@@ -20,6 +20,7 @@ import org.izolentiy.shiftentrance.model.Currency
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import org.izolentiy.shiftentrance.repository.Resource
 import org.izolentiy.shiftentrance.ui.CurrencyFragment.Companion.CHAR_CODE
+import org.izolentiy.shiftentrance.ui.CurrencyFragment.Companion.NOMINAL
 import org.izolentiy.shiftentrance.ui.CurrencyFragment.Companion.RATE
 
 @AndroidEntryPoint
@@ -29,13 +30,16 @@ class CurrencyListFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: CurrencyListViewModel by viewModels()
     private var errorShowedOnce = false
+    private var shownSnackbar: Snackbar? = null
 
     private val onCurrencyClick: (Currency) -> Unit = { currency ->
         Log.d(TAG, "${currency.charCode}: is clicked")
         val args = Bundle().apply {
             putString(CHAR_CODE, currency.charCode)
             putDouble(RATE, currency.value / currency.nominal)
+            putInt(NOMINAL, currency.nominal)
         }
+        shownSnackbar?.dismiss()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, CurrencyFragment.newInstance(args))
             .addToBackStack(null).commit()
@@ -116,6 +120,7 @@ class CurrencyListFragment : Fragment() {
     private fun showSnackBar(message: String, time: Int, isError: Boolean) {
         val view = activity?.findViewById<View>(R.id.fragment_container)!!
         val snackbar: Snackbar = Snackbar.make(view, message, time)
+        shownSnackbar = snackbar
 
         if (isError) snackbar.setAction("OK") {
             val latestRate = viewModel.exchangeRate.value?.data
