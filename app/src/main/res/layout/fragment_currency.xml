@@ -68,6 +68,33 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="edit_text_base_currency, edit_text_selected_currency, text_view_selected_currency, text_view_base_currency" />
 
+    <TextView
+        android:id="@+id/text_view_rates_to_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rates_to_display"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/spinner_count"
+        app:layout_constraintEnd_toStartOf="@id/spinner_count"
+        app:layout_constraintTop_toBottomOf="@id/converter_barrier" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/spinner_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/converter_barrier"
+        tools:listitem="@android:layout/simple_spinner_item" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/progress_bar_margin"
+        app:layout_constraintEnd_toEndOf="@id/line_chart_currency"
+        app:layout_constraintStart_toStartOf="@id/line_chart_currency"
+        app:layout_constraintTop_toTopOf="@id/line_chart_currency" />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart_currency"
         android:layout_width="match_parent"
@@ -77,6 +104,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/converter_barrier" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_count" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

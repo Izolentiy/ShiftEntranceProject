@@ -1,32 +1,26 @@
 package org.izolentiy.shiftentrance.ui
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOn
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import org.izolentiy.shiftentrance.repository.Repository
+import org.izolentiy.shiftentrance.repository.Resource
 import javax.inject.Inject
 
 @HiltViewModel
 class CurrencyViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-    private val _latestRates = MutableLiveData<List<ExchangeRate>>()
-    val latestRates: LiveData<List<ExchangeRate>> = _latestRates
+
+    val latestRates: LiveData<Resource<List<ExchangeRate>?>> =
+        repository.latestRates.flowOn(Dispatchers.IO).asLiveData()
 
     val baseSum = MutableLiveData(0.0f)
 
-    fun loadLatestRates(count: Int = 15) = viewModelScope.launch(Dispatchers.IO) {
-        Log.i(TAG, "loadLatestRates: START LOADING $count LATEST RATES")
-        val result = repository.loadLatestRates(count) ?: emptyList()
-        _latestRates.postValue(result)
-        Log.i(TAG, "loadLatestRates: LOADING OF $count LATEST RATES ENDED ")
+    fun loadLatestRates(count: Int = 8) {
+        repository.loadRates(count)
     }
 
     companion object {

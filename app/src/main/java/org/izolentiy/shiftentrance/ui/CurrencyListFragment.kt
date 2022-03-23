@@ -110,7 +110,6 @@ class CurrencyListFragment : Fragment() {
         if (rate != null)
             processData(rate, adapter)
         binding.swipeRefreshLayout.isRefreshing = false
-        Log.d(TAG, "onCreateView: CURRENCIES_SUBMITTED")
     }
 
     private fun processData(rate: ExchangeRate, adapter: CurrencyAdapter) {

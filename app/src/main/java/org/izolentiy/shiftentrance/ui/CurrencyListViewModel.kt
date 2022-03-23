@@ -21,7 +21,7 @@ class CurrencyListViewModel @Inject constructor(
     val exchangeRate: LiveData<Resource<out ExchangeRate?>> =
         repository.exchangeRate.flowOn(Dispatchers.IO).asLiveData()
 
-    fun reloadData() = viewModelScope.launch(Dispatchers.IO) {
+    fun reloadData() {
         repository.reloadRate()
     }
 

@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import org.izolentiy.shiftentrance.*
@@ -55,23 +56,25 @@ fun configureLineChart(lineChart: LineChart) {
     }
 }
 
-fun preparedDataSet(
+fun preparedLineData(
     context: Context, dataSet: LineDataSet, resources: Resources
-): LineDataSet = dataSet.apply {
-    circleRadius = CIRCLE_RADIUS
-    circleHoleRadius = CIRCLE_HOLE_RADIUS
-    lineWidth = LINE_WIDTH
-    valueTextSize = CHART_TEXT_SIZE
+): LineData = LineData(
+    dataSet.apply {
+        circleRadius = CIRCLE_RADIUS
+        circleHoleRadius = CIRCLE_HOLE_RADIUS
+        lineWidth = LINE_WIDTH
+        valueTextSize = CHART_TEXT_SIZE
 
-    highlightLineWidth = HIGHLIGHT_LINE_WIDTH
-    highLightColor = resources.getColor(R.color.teal_200, context.theme)
+        highlightLineWidth = HIGHLIGHT_LINE_WIDTH
+        highLightColor = resources.getColor(R.color.teal_200, context.theme)
 
-    color = resources.getColor(R.color.purple_200, context.theme)
-    fillDrawable = ResourcesCompat
-        .getDrawable(resources, R.drawable.bg_chart_fill, context.theme)
+        color = resources.getColor(R.color.purple_200, context.theme)
+        fillDrawable = ResourcesCompat
+            .getDrawable(resources, R.drawable.bg_chart_fill, context.theme)
 
-    setCircleColor(color)
-    setDrawValues(false)
-    setDrawCircles(true)
-    setDrawFilled(true)
-}
+        setCircleColor(color)
+        setDrawValues(false)
+        setDrawCircles(true)
+        setDrawFilled(true)
+    }
+)

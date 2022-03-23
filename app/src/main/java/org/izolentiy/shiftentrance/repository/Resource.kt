@@ -6,9 +6,7 @@ data class Resource<T>(
     val error: Throwable?
 ) {
     enum class Status {
-        SUCCESS,
-        LOADING,
-        ERROR
+        SUCCESS, LOADING, ERROR
     }
 
     companion object {

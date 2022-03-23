@@ -7,4 +7,14 @@
     <string name="local_data_loaded">Latest saved rate loaded: %1$s</string>
     <string name="empty_data">No exchange rate</string>
     <string name="unable_to_download">Unable to download rate from network</string>
+    <string name="rates_to_display">Rates to display:</string>
+    <string name="no_char_data">No chart data</string>
+    <string name="loading_chart_data">Loading chart data</string>
+    <string name="error_chart_data">Error while loading chart data</string>
+
+    <string-array name="load_rate_count">
+        <item>8</item>
+        <item>15</item>
+        <item>25</item>
+    </string-array>
 </resources>
