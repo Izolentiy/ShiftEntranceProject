@@ -4,13 +4,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_chart_fill.xml" value="0.2085" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_marker.xml" value="0.2085" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_marker_detail.xml" value="0.2085" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_marker_round.xml" value="0.2085" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/activity_main.xml" value="0.3425925925925926" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/custom_view_marker.xml" value="0.3435185185185185" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/fragment_currency.xml" value="0.25763888888888886" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/fragment_currency_list.xml" value="0.3425925925925926" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/item_currency.xml" value="0.3425925925925926" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/list_item_currency.xml" value="0.3425925925925926" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/spinner_dropdown.xml" value="0.3435185185185185" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/spinner_text.xml" value="0.3435185185185185" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/view_marker.xml" value="0.3435185185185185" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/view_marker_detail.xml" value="0.3435185185185185" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/layout/view_marker_round.xml" value="0.3435185185185185" />
       </map>
     </option>
   </component>

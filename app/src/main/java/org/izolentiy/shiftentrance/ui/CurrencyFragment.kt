@@ -19,7 +19,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import dagger.hilt.android.AndroidEntryPoint
 import org.izolentiy.shiftentrance.BASE_CURRENCY
 import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
-import org.izolentiy.shiftentrance.DATE_FORMAT
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyBinding
 import org.izolentiy.shiftentrance.model.ExchangeRate
@@ -89,7 +88,14 @@ class CurrencyFragment : Fragment() {
             configureEditText(editTextBaseCurrency)
             configureEditText(editTextSelectedCurrency)
 
-            configureLineChart(lineChartCurrency)
+            configureLineChart(lineChart)
+
+            val detailMarker = DetailMarkerView(requireContext()).apply { chartView = lineChart }
+            val roundMarker = RoundMarkerView(requireContext())
+            lineChart.apply {
+                detailMarkerView = detailMarker
+                roundMarkerView = roundMarker
+            }
         }
         viewModel.baseSum.observe(viewLifecycleOwner) { base ->
             val selected = base / exchangeRate
@@ -136,7 +142,7 @@ class CurrencyFragment : Fragment() {
                 noDataText = getString(R.string.no_char_data)
             }
         }
-        binding.lineChartCurrency.apply {
+        binding.lineChart.apply {
             data = prepareData(latestRates)
             setNoDataText(noDataText)
             invalidate()

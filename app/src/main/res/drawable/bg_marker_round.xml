@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:endColor="@color/teal_700"
+        android:gradientRadius="@dimen/round_marker_gradient_radius"
+        android:startColor="@color/white"
+        android:type="radial" />
+    <size
+        android:width="@dimen/round_marker_diameter"
+        android:height="@dimen/round_marker_diameter" />
+</shape>

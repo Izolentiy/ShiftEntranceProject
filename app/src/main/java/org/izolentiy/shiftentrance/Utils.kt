@@ -14,6 +14,9 @@ const val X_OFFSET = 16f
 const val CHART_TEXT_SIZE = 12f
 const val NO_DATA_TEXT_SIZE = 50f
 
+const val DETAIL_MARKER_OFFSET_MULTIPLIER = 1.2f
+
+// TODO: Make it work with xml
 const val CIRCLE_RADIUS = 5f
 const val CIRCLE_HOLE_RADIUS = 3f
 const val LINE_WIDTH = 3f

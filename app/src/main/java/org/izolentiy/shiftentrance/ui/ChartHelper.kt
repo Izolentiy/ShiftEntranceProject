@@ -76,5 +76,6 @@ fun preparedLineData(
         setDrawValues(false)
         setDrawCircles(true)
         setDrawFilled(true)
+        setDrawHighlightIndicators(false)
     }
 )

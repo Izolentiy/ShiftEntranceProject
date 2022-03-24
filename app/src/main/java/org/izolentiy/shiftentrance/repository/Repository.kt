@@ -25,8 +25,6 @@ class Repository @Inject constructor(
             shouldReload = false
             Log.w(TAG, "exchangeRate: LOADING COMPLETED")
         }
-    }.catch { cause ->
-        emit(Resource.error(cause))
     }
     val latestRates: Flow<Resource<List<ExchangeRate>?>> = flow {
         ratesToLoad.collect { count ->
@@ -35,8 +33,6 @@ class Repository @Inject constructor(
             emit(loadLatestRates(count))
             Log.w(TAG, "latestRates: LOADING OF $count RATES COMPLETED")
         }
-    }.catch { cause ->
-        emit(Resource.error(cause))
     }
 
     fun loadRates(count: Int) {
@@ -48,10 +44,10 @@ class Repository @Inject constructor(
         loadingTrigger.tryEmit(Unit)
     }
 
-    private suspend fun loadRate(fetch: Boolean): Resource<ExchangeRate> {
+    private suspend fun loadRate(fetch: Boolean): Resource<ExchangeRate> = try {
         val dataFromDb = exchangeRateDao.getLatestRate()
 
-        return if (fetch || dataFromDb == null || dataFromDb.currencies.isEmpty()) {
+        if (fetch || dataFromDb == null || dataFromDb.currencies.isEmpty()) {
             val dataFromNet = service.getDailyRate().body()
                 ?: throw Throwable("Empty fetch result")
             exchangeRateDao.insertExchangeRates(dataFromNet)
@@ -62,10 +58,12 @@ class Repository @Inject constructor(
             Log.d(TAG, "loadExchangeRate: NO_NEED_TO_FETCH")
             Resource.success(dataFromDb)
         }
+    } catch (exception: Throwable) {
+        val dataFromDb = exchangeRateDao.getLatestRate()
+        Resource.error(exception, dataFromDb)
     }
 
-    private suspend fun loadLatestRates(count: Int): Resource<List<ExchangeRate>?> {
-        if (count == 0) return Resource.success(emptyList())
+    private suspend fun loadLatestRates(count: Int): Resource<List<ExchangeRate>?> = try {
         // Get latest rate. Check if it is not null, if so fetch from network latest.
         val latestRate = exchangeRateDao.getLatestRate()
             ?: service.getDailyRate().body()
@@ -88,7 +86,9 @@ class Repository @Inject constructor(
             previousURL = previousRate.previousURL
             previousDate = previousRate.previousDate
         }
-        return Resource.success(rates)
+        Resource.success(rates)
+    } catch (exception: Throwable) {
+        Resource.error(exception)
     }
 
     private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate? {
