@@ -5,5 +5,5 @@
     <dimen name="marker_padding">6dp</dimen>
     <dimen name="marker_detail_corner_radius">12dp</dimen>
     <dimen name="round_marker_diameter">10dp</dimen>
-    <dimen name="round_marker_gradient_radius">3dp</dimen>
+    <dimen name="round_marker_stroke_width">3dp</dimen>
 </resources>
