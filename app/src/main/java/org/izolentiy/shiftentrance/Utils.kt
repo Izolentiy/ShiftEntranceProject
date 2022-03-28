@@ -5,6 +5,10 @@ import java.util.*
 
 const val BASE_CURRENCY = "RUB"
 const val MESSAGE_TIMEOUT = 5000 // milliseconds
+
+const val API_CALL_PER_SECOND = 3  // permitted
+const val API_CALL_DELAY = (1000 / API_CALL_PER_SECOND).toLong()
+
 const val LABEL_COUNT_X_AXIS = 7
 const val LABEL_COUNT_Y_AXIS = 14
 

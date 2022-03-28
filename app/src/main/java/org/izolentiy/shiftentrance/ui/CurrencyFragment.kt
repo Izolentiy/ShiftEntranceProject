@@ -173,7 +173,7 @@ class CurrencyFragment : Fragment() {
             val currency = rate.currencies.find { it.charCode == charCode }!!
 
             val info = "${currency.value}, ${CHART_DATE_FORMAT.format(rate.date)}"
-            Log.i(TAG, "onCreateView: ExchangeRate $info")
+            Log.i(TAG, "prepareData: $info")
 
             Entry(rate.date.time.toFloat(), currency.value.toFloat())
         }
