@@ -3,7 +3,9 @@
 
 <img src="screenshots/Screenshot_20220324_102920.png" width="330"> <img src="screenshots/Screenshot_20220324_102954.png" width="330">
 
-Библиотеки:
+## Библиотеки:
+
+### Основные
 - Kotlin Coroutines
 - Room
 - Retrofit
@@ -13,3 +15,10 @@
 - LiveData
 - ViewBinding
 - MPAndroidChart
+
+### Для тестирования
+- Mockk
+- JUnit5
+- CoroutinesTest
+- Turbine
+- MockWebServer
