@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
-class RateRepositoryTest {
-    private val dao = mockkClass(ExchangeRatesDao::class)
+internal class RateRepositoryTest {
+    private val dao = mockkClass(RateDao::class)
     private val service = mockkClass(CbrService::class)
     private val repos = RateRepository(dao, service)
 

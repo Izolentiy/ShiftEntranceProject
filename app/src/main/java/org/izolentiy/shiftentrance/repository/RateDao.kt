@@ -8,7 +8,7 @@ import org.izolentiy.shiftentrance.model.ExchangeRate
 import java.util.*
 
 @Dao
-interface ExchangeRatesDao {
+interface RateDao {
 
     @Query("SELECT * FROM exchange_rates WHERE :date = date")
     suspend fun getExchangeRateByDate(date: Date): ExchangeRate?

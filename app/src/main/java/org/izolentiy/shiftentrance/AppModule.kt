@@ -12,7 +12,7 @@ import org.izolentiy.shiftentrance.model.ExchangeRate
 import org.izolentiy.shiftentrance.model.ServerResponseDeserializer
 import org.izolentiy.shiftentrance.repository.AppDatabase
 import org.izolentiy.shiftentrance.repository.CbrService
-import org.izolentiy.shiftentrance.repository.ExchangeRatesDao
+import org.izolentiy.shiftentrance.repository.RateDao
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -46,6 +46,6 @@ object AppModule {
         .build()
 
     @Provides
-    fun provideExchangeRateDao(db: AppDatabase): ExchangeRatesDao = db.exchangeRatesDao()
+    fun provideRateDao(db: AppDatabase): RateDao = db.rateDao()
 
 }

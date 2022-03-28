@@ -38,11 +38,10 @@ class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
     }
 
     private val currencyList = listOf(
-        "AMD", "AUD", "AZN", "BGN", "BRL", "BYN", "CAD",
-        "CHF", "CNY", "CZK", "DKK", "EUR", "GBP", "HKD",
-        "HUF", "INR", "JPY", "KGS", "KRW", "KZT", "MDL",
-        "NOK", "PLN", "RON", "SEK", "SGD", "TJS", "TMT",
-        "TRY", "UAH", "USD", "UZS", "XDR", "ZAR"
+        "AMD", "AUD", "AZN", "BGN", "BRL", "BYN", "CAD", "CHF", "CNY",
+        "CZK", "DKK", "EUR", "GBP", "HKD", "HUF", "INR", "JPY", "KGS",
+        "KRW", "KZT", "MDL", "NOK", "PLN", "RON", "SEK", "SGD", "TJS",
+        "TMT", "TRY", "UAH", "USD", "UZS", "XDR", "ZAR"
     )
 
 }

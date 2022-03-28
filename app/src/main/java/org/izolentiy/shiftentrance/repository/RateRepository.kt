@@ -8,7 +8,7 @@ import java.util.*
 import javax.inject.Inject
 
 class RateRepository @Inject constructor(
-    private val rateDao: ExchangeRatesDao,
+    private val rateDao: RateDao,
     private val rateService: CbrService,
 ) {
 
@@ -49,7 +49,7 @@ class RateRepository @Inject constructor(
         val dataFromDb = rateDao.getLatestRate()
 
         if (fetch || dataFromDb == null || dataFromDb.currencies.isEmpty()) {
-            val dataFromNet = rateService.getDailyRate().body()
+            val dataFromNet = callManager.perform { rateService.getDailyRate().body() }
                 ?: throw Throwable("Empty fetch result")
             rateDao.insertExchangeRates(dataFromNet)
 

@@ -14,5 +14,5 @@ import org.izolentiy.shiftentrance.model.ExchangeRate
 )
 @TypeConverters(DateConverter::class, CurrenciesConverter::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun exchangeRatesDao(): ExchangeRatesDao
+    abstract fun rateDao(): RateDao
 }
