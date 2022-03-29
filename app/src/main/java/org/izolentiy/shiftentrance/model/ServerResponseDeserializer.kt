@@ -28,10 +28,16 @@ class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
             )
             currencies.add(element)
         }
+
+        // See explanation below
+        val urlWithExtraSymbols = data.get("PreviousURL").asString
+            .replace("/", "//") // <- this have to be used now
+
         return ExchangeRate(
             date = DATE_FORMAT.parse(data.get("Date").asString)!!,
             previousDate = DATE_FORMAT.parse(data.get("PreviousDate").asString)!!,
-            previousURL = data.get("PreviousURL").asString,
+//            previousURL = data.get("PreviousURL").asString, // <- worked before
+            previousURL = urlWithExtraSymbols,
             timestamp = data.get("Timestamp").asString,
             currencies = currencies
         )
@@ -65,4 +71,24 @@ Server response
         }, ...
     }
 }
+-----><-----
+Explanation:
+
+The url string parsed by gson from json sent from server looks like this:
+"//www.cbr-xml-daily.ru/archive/2022/03/29/daily_json.js" <- now return 404
+
+It worked fine earlier, but now you have to place extra symbol "/" inside
+"//www.cbr-xml-daily.ru/archive/2022/03/29//daily_json.js" <- behave as earlier
+
+Only one symbol of difference. And before the code worked without
+ridiculous workaround like adding extra "/" symbol.
+The funniest thing is that it doesn't matter where to place extra symbol or
+how much of them is in url. They are all valid...
+
+"//www.cbr-xml-daily.ru//archive/2022/03/29/daily_json.js"
+"//www.cbr-xml-daily.ru/archive//2022/03/29/daily_json.js"
+"//www.cbr-xml-daily.ru/archive/2022//03/29/daily_json.js"
+"//www.cbr-xml-daily.ru/archive/2022/03/29//daily_json.js"
+"////www.cbr-xml-daily.ru//archive///////2022///03/29////daily_json.js"
+
  */
