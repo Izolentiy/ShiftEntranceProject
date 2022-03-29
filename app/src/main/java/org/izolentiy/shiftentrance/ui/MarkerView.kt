@@ -11,7 +11,6 @@ import com.github.mikephil.charting.utils.MPPointF
 import org.izolentiy.shiftentrance.DETAIL_MARKER_OFFSET_MULTIPLIER
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.toStringDate
-import java.util.*
 
 class DetailMarkerView(
     context: Context?,
@@ -36,7 +35,7 @@ class DetailMarkerView(
      */
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         try {
-            textViewDate.text = e?.x?.toStringDate()
+            textViewDate.text = e?.x?.toStringDate(resources.configuration.locales.get(0))
             textViewValue.text = e?.y.toString()
         } catch (error: Throwable) {
             Log.e(TAG, "refreshContent: ERROR")

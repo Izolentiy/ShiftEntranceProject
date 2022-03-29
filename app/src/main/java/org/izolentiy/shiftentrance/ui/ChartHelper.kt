@@ -1,7 +1,6 @@
 package org.izolentiy.shiftentrance.ui
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
@@ -25,7 +24,8 @@ fun configureLineChart(lineChart: LineChart) {
             textSize = CHART_TEXT_SIZE
             textColor = resolveColor(context, R.attr.chartTextColor)
             valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float) = value.toStringDate()
+                override fun getFormattedValue(value: Float) = value
+                    .toStringDate(resources.configuration.locales.get(0))
             }
             setLabelCount(LABEL_COUNT_X_AXIS, true)
             setDrawGridLines(false)

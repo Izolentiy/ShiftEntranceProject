@@ -36,12 +36,14 @@ const val TOP_EXTRA_OFFSET = 12f
 const val BOTTOM_EXTRA_OFFSET = 12f
 const val RIGHT_EXTRA_OFFSET = 25f
 
-@SuppressLint("ConstantLocale")
-val CHART_DATE_FORMAT = SimpleDateFormat("dd MMM", Locale(Locale.getDefault().language))
+val CHART_DATE_FORMAT = SimpleDateFormat("dd MMM", Locale.ENGLISH)
 val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH)
 val MESSAGE_FORMAT = SimpleDateFormat("HH:mm dd.MM.yyyy XXX", Locale.ENGLISH)
 
-fun Float.toStringDate(): String = CHART_DATE_FORMAT.format(Date(this.toLong()))
+fun Float.toStringDate(locale: Locale): String {
+    val format = SimpleDateFormat("dd MMM", locale)
+    return format.format(Date(this.toLong()))
+}
 
 fun resolveColor(context: Context, attr: Int): Int {
     val colorResId = TypedValue().apply {
