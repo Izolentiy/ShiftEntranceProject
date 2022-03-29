@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_chart_fill.xml" value="0.2085" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_chart_fill_dark.xml" value="0.2085" />
+        <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_dark_chart_fill.xml" value="0.2085" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_marker.xml" value="0.2085" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_marker_detail.xml" value="0.2085" />
         <entry key="..\:/Android/Projects/ShiftEntranceProject/app/src/main/res/drawable/bg_marker_round.xml" value="0.2085" />

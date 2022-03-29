@@ -10,15 +10,16 @@
 
     <TextView
         android:id="@+id/text_view_nominal_char_code"
+        style="@style/TextPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="EUR 1" />
 
     <TextView
         android:id="@+id/text_view_name"
+        style="@style/TextSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/text_view_nominal_char_code"
@@ -27,9 +28,9 @@
 
     <TextView
         android:id="@+id/text_view_exchange_rate"
+        style="@style/TextPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_view_nominal_char_code"
         tools:text="128.95 RUB" />

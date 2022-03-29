@@ -1,7 +1,9 @@
 package org.izolentiy.shiftentrance.repository
 
 import android.util.Log
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import org.izolentiy.shiftentrance.API_CALL_DELAY
 import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import java.util.*
@@ -20,19 +22,23 @@ class RateRepository @Inject constructor(
 
     val exchangeRate: Flow<Resource<out ExchangeRate?>> = flow {
         loadingTrigger.collect {
+            val startTime = System.currentTimeMillis()
             Log.w(TAG, "exchangeRate: LOADING TRIGGERED")
             emit(Resource.loading())
             emit(loadRate(shouldReload))
             shouldReload = false
-            Log.w(TAG, "exchangeRate: LOADING COMPLETED")
+            val endTime = System.currentTimeMillis() - startTime
+            Log.w(TAG, "exchangeRate: LOADING COMPLETED $endTime ms")
         }
     }
     val latestRates: Flow<Resource<List<ExchangeRate>?>> = flow {
         ratesToLoad.filter { it > 0 }.collect { count ->
+            val startTime = System.currentTimeMillis()
             Log.w(TAG, "latestRates: LOADING LATEST $count RATES")
             emit(Resource.loading())
             emit(loadLatestRates(count))
-            Log.w(TAG, "latestRates: LOADING OF $count RATES COMPLETED")
+            val endTime = System.currentTimeMillis() - startTime
+            Log.w(TAG, "latestRates: LOADING OF $count RATES COMPLETED $endTime ms")
         }
     }
 
@@ -60,11 +66,16 @@ class RateRepository @Inject constructor(
             Resource.success(dataFromDb)
         }
     } catch (exception: Throwable) {
+        Log.e(TAG, "loadRate: ${exception.message}")
         val dataFromDb = rateDao.getLatestRate()
         Resource.error(exception, dataFromDb)
     }
 
     private suspend fun loadLatestRates(count: Int): Resource<List<ExchangeRate>?> = try {
+        val startTime = System.currentTimeMillis()
+        var endTime: Long
+        var date: String
+
         // Get latest rate. Check if it is not null, if so fetch from network latest.
         val latestRate = loadLatestRate()
             ?: throw Throwable("Fetch result is null")
@@ -75,8 +86,9 @@ class RateRepository @Inject constructor(
 
         val rates = mutableListOf<ExchangeRate>()
         rates.add(latestRate)
-        var date = CHART_DATE_FORMAT.format(latestRate.date)
-        Log.i(TAG, "loadLatestRates: 0 $date")
+        date = CHART_DATE_FORMAT.format(latestRate.date)
+        endTime = System.currentTimeMillis() - startTime
+        Log.i(TAG, "loadLatestRates: 0 $date $endTime ms")
 
         repeat(count - 1) { i ->
             // Check if in DB exists this rate, else if it is not, fetch it.
@@ -85,13 +97,15 @@ class RateRepository @Inject constructor(
 
             rates.add(previousRate)
             date = CHART_DATE_FORMAT.format(previousRate.date)
-            Log.i(TAG, "loadLatestRates: ${i + 1} $date")
+            endTime = System.currentTimeMillis() - startTime
+            Log.i(TAG, "loadLatestRates: ${i + 1} $date $endTime ms")
 
             previousURL = previousRate.previousURL
             previousDate = previousRate.previousDate
         }
         Resource.success(rates)
     } catch (exception: Throwable) {
+        Log.e(TAG, "loadLatestRates: ${exception.message}")
         Resource.error(exception)
     }
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="chartStyle">
+        <attr name="lineColor" format="reference" />
+        <attr name="circleHoleColor" format="reference" />
+        <attr name="chartTextColor" format="reference" />
+        <attr name="fillBackground" format="reference" />
+    </declare-styleable>
+</resources>

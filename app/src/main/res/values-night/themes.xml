@@ -12,5 +12,20 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <!-- Chart customization -->
+        <item name="lineColor">@color/purple_200</item>
+        <item name="circleHoleColor">@color/black</item>
+        <item name="chartTextColor">@color/gray_200</item>
+        <item name="fillBackground">@drawable/bg_chart_fill_dark</item>
+    </style>
+
+    <style name="TextPrimary" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/gray_200</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextSecondary" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/gray_150</item>
     </style>
 </resources>

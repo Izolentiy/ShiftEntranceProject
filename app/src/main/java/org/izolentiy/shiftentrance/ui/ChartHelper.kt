@@ -3,7 +3,6 @@ package org.izolentiy.shiftentrance.ui
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
-import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
@@ -17,12 +16,14 @@ fun configureLineChart(lineChart: LineChart) {
         setExtraOffsets(0f, TOP_EXTRA_OFFSET, RIGHT_EXTRA_OFFSET, BOTTOM_EXTRA_OFFSET)
         setDrawBorders(true)
         setBorderWidth(BORDER_WIDTH)
+        setBorderColor(resolveColor(context, R.attr.chartTextColor))
 
         description.isEnabled = false
 
         xAxis.apply {
             yOffset = Y_OFFSET
             textSize = CHART_TEXT_SIZE
+            textColor = resolveColor(context, R.attr.chartTextColor)
             valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float) = value.toStringDate()
             }
@@ -34,6 +35,7 @@ fun configureLineChart(lineChart: LineChart) {
         axisLeft.apply {
             xOffset = X_OFFSET
             textSize = CHART_TEXT_SIZE
+            textColor = resolveColor(context, R.attr.chartTextColor)
             labelCount = LABEL_COUNT_Y_AXIS
             setDrawGridLines(false)
             setDrawAxisLine(false)
@@ -51,13 +53,15 @@ fun configureLineChart(lineChart: LineChart) {
 
         legend.apply {
             textSize = CHART_TEXT_SIZE
+            // resources.getColor(R.color.dark_gray, context.theme)
+            textColor = resolveColor(context, R.attr.chartTextColor)
             form = Legend.LegendForm.CIRCLE
         }
     }
 }
 
 fun preparedLineData(
-    context: Context, dataSet: LineDataSet, resources: Resources
+    context: Context, dataSet: LineDataSet
 ): LineData = LineData(
     dataSet.apply {
         circleRadius = CIRCLE_RADIUS
@@ -65,12 +69,9 @@ fun preparedLineData(
         lineWidth = LINE_WIDTH
         valueTextSize = CHART_TEXT_SIZE
 
-        highlightLineWidth = HIGHLIGHT_LINE_WIDTH
-        highLightColor = resources.getColor(R.color.teal_200, context.theme)
-
-        color = resources.getColor(R.color.purple_200, context.theme)
-        fillDrawable = ResourcesCompat
-            .getDrawable(resources, R.drawable.bg_chart_fill, context.theme)
+        circleHoleColor = resolveColor(context, R.attr.circleHoleColor)
+        color = resolveColor(context, R.attr.lineColor)
+        fillDrawable = resolveDrawable(context, R.attr.fillBackground)
 
         setCircleColor(color)
         setDrawValues(false)

@@ -180,7 +180,7 @@ class CurrencyFragment : Fragment() {
 
         return if (!entries.isNullOrEmpty()) {
             val label = "$nominal $charCode  >>  $BASE_CURRENCY"
-            preparedLineData(requireContext(), LineDataSet(entries, label), resources)
+            preparedLineData(requireContext(), LineDataSet(entries, label))
         } else null
     }
 

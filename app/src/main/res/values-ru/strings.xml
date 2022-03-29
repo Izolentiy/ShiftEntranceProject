@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Курсы валют</string>
+    <string name="base_currency_format">%1$.2f %2$s</string>
+    <string name="currency_format">%1$s %2$d</string>
+    <string name="enter_sum_hint">Введите сумму</string>
+    <string name="data_loaded">Курс загружен: %1$s</string>
+    <string name="local_data_loaded">Загружен последний сохранённый курс: %1$s</string>
+    <string name="empty_data">Нет курсов</string>
+    <string name="unable_to_download">Не получилось загрузить курсы из сети</string>
+    <string name="rates_to_display">Загрузить последние:</string>
+    <string name="no_char_data">Нет данных</string>
+    <string name="loading_chart_data">Загрузка данных</string>
+    <string name="error_chart_data">Ошибка во время загрузки</string>
+
+    <string-array name="load_rate_count">
+        <item>8</item>
+        <item>15</item>
+        <item>25</item>
+    </string-array>
+</resources>

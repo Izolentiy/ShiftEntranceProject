@@ -11,6 +11,7 @@ import com.github.mikephil.charting.utils.MPPointF
 import org.izolentiy.shiftentrance.DETAIL_MARKER_OFFSET_MULTIPLIER
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.toStringDate
+import java.util.*
 
 class DetailMarkerView(
     context: Context?,
