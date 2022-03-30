@@ -36,7 +36,7 @@ class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
         return ExchangeRate(
             date = DATE_FORMAT.parse(data.get("Date").asString)!!,
             previousDate = DATE_FORMAT.parse(data.get("PreviousDate").asString)!!,
-//            previousURL = data.get("PreviousURL").asString, // <- worked before
+//            previousURL = data.get("PreviousURL").asString, // <- works not on all devices
             previousURL = urlWithExtraSymbols,
             timestamp = data.get("Timestamp").asString,
             currencies = currencies
@@ -90,5 +90,11 @@ how much of them is in url. They are all valid...
 "//www.cbr-xml-daily.ru/archive/2022//03/29/daily_json.js"
 "//www.cbr-xml-daily.ru/archive/2022/03/29//daily_json.js"
 "////www.cbr-xml-daily.ru//archive///////2022///03/29////daily_json.js"
+
+Edit:
+I found that this url (with https:)"//www.cbr-xml-daily.ru/archive/2022/03/29/daily_json.js"
+works fine on [Pixel 4 API 27], but don't on [Galaxy S9 API 29].
+In browser it didn't work yesterday, but today it started to work again...
+Anyway url with extra symbols works great on all devices
 
  */

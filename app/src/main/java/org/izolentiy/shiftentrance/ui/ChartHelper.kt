@@ -1,7 +1,6 @@
 package org.izolentiy.shiftentrance.ui
 
 import android.content.Context
-import android.graphics.Color
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
@@ -48,12 +47,11 @@ fun configureLineChart(lineChart: LineChart) {
 
         getPaint(Chart.PAINT_INFO).apply {
             textSize = NO_DATA_TEXT_SIZE
-            color = Color.DKGRAY
+            color = resolveColor(context, R.attr.chartTextColor)
         }
 
         legend.apply {
             textSize = CHART_TEXT_SIZE
-            // resources.getColor(R.color.dark_gray, context.theme)
             textColor = resolveColor(context, R.attr.chartTextColor)
             form = Legend.LegendForm.CIRCLE
         }
