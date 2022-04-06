@@ -43,21 +43,26 @@ class CurrencyFragment : Fragment() {
     private var rate: Double = 0.0
     private var nominal: Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.apply {
-            rate = getDouble(RATE)
-            charCode = getString(CHAR_CODE)!!
-            nominal = getInt(NOMINAL)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val exchangeRate = rate.toFloat()
+        // Process arguments
+        arguments?.apply {
+            rate = getDouble(RATE)
+            charCode = getString(CHAR_CODE)!!
+            nominal = getInt(NOMINAL)
+        }
+
+        // Set activity title
+        val arrayItem = resources.getStringArray(R.array.currency_names)
+            .find { it.contains(charCode) }
+        if (arrayItem != null) {
+            // array item = "key:value"
+            val title = arrayItem.split(":").last()
+            activity?.title = title
+        }
 
         _binding = FragmentCurrencyBinding.inflate(inflater, container, false)
         binding.apply {
@@ -97,6 +102,8 @@ class CurrencyFragment : Fragment() {
                 roundMarkerView = roundMarker
             }
         }
+
+        val exchangeRate = rate.toFloat()
         viewModel.baseSum.observe(viewLifecycleOwner) { base ->
             val selected = base / exchangeRate
 

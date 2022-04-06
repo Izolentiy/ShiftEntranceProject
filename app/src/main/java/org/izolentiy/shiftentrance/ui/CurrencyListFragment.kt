@@ -30,7 +30,7 @@ class CurrencyListFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: CurrencyListViewModel by viewModels()
     private var errorShowedOnce = false
-    private var shownSnackbar: Snackbar? = null
+    private var displayedSnackbar: Snackbar? = null
 
     private val onCurrencyClick: (Currency) -> Unit = { currency ->
         Log.d(TAG, "${currency.charCode}: is clicked")
@@ -39,7 +39,7 @@ class CurrencyListFragment : Fragment() {
             putDouble(RATE, currency.value / currency.nominal)
             putInt(NOMINAL, currency.nominal)
         }
-        shownSnackbar?.dismiss()
+        displayedSnackbar?.dismiss()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, CurrencyFragment.newInstance(args))
             .addToBackStack(null).commit()
@@ -50,9 +50,19 @@ class CurrencyListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val currencyAdapter = CurrencyAdapter(onCurrencyClick)
+        activity?.title = resources.getString(R.string.app_name)
 
         _binding = FragmentCurrencyListBinding.inflate(inflater, container, false)
+
+        val currencyNames = mutableMapOf<String, String>()
+        // Populate currencyNames from string array in resources
+        resources.getStringArray(R.array.currency_names).forEach { item ->
+            // item = "key:value"
+            val keyValuePair = item.split(":")
+            with(keyValuePair) { currencyNames[first()] = last() }
+        }
+
+        val currencyAdapter = CurrencyAdapter(onCurrencyClick, currencyNames)
         binding.apply {
             swipeRefreshLayout.setOnRefreshListener {
                 viewModel.reloadData()
@@ -77,9 +87,9 @@ class CurrencyListFragment : Fragment() {
         _binding = null
     }
 
-    private fun handleResource(result: Resource<out ExchangeRate?>, adapter: CurrencyAdapter) {
-        val rate = result.data
-        when (result.status) {
+    private fun handleResource(resource: Resource<out ExchangeRate?>, adapter: CurrencyAdapter) {
+        val rate = resource.data
+        when (resource.status) {
             Resource.Status.ERROR -> {
                 if (!errorShowedOnce) {
                     errorShowedOnce = true
@@ -102,35 +112,30 @@ class CurrencyListFragment : Fragment() {
                 val message = if (rate != null)
                     getString(R.string.data_loaded, MESSAGE_FORMAT.format(rate.loaded))
                 else getString(R.string.empty_data)
-
-                Log.e(TAG, "handleResource: SUCCESS")
                 showSnackBar(message, MESSAGE_TIMEOUT, false)
+                Log.e(TAG, "handleResource: SUCCESS")
             }
         }
         if (rate != null)
-            processData(rate, adapter)
+            adapter.submitList(rate.currencies)
         binding.swipeRefreshLayout.isRefreshing = false
     }
 
-    private fun processData(rate: ExchangeRate, adapter: CurrencyAdapter) {
-        adapter.submitList(rate.currencies)
-    }
-
-    private fun showSnackBar(message: String, time: Int, isError: Boolean) {
+    private fun showSnackBar(string: String, time: Int, isError: Boolean) {
         val view = activity?.findViewById<View>(R.id.fragment_container)!!
-        val snackbar: Snackbar = Snackbar.make(view, message, time)
-        shownSnackbar = snackbar
+        val snackbar: Snackbar = Snackbar.make(view, string, time)
+        displayedSnackbar = snackbar
 
         if (isError) snackbar.setAction("OK") {
             val latestRate = viewModel.exchangeRate.value?.data
-            Log.e(TAG, "showSnackBar: latestRate $latestRate")
+
             if (latestRate?.currencies?.isNotEmpty() == true) {
-                val stringRes = R.string.local_data_loaded
-                val msg = getString(stringRes, MESSAGE_FORMAT.format(latestRate.loaded))
-                showSnackBar(msg, MESSAGE_TIMEOUT, false)
+                val resId = R.string.local_data_loaded
+                val message = getString(resId, MESSAGE_FORMAT.format(latestRate.loaded))
+                showSnackBar(message, MESSAGE_TIMEOUT, false)
             } else {
-                val msg = getString(R.string.empty_data)
-                showSnackBar(msg, Snackbar.LENGTH_INDEFINITE, false)
+                val message = getString(R.string.empty_data)
+                showSnackBar(message, Snackbar.LENGTH_INDEFINITE, false)
             }
         }
         snackbar.show()

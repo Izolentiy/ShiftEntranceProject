@@ -1,21 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ShiftEntrance" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.ShiftEntrance" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/black_200</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/black_200</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
         <!-- Chart customization -->
         <item name="lineColor">@color/purple_200</item>
-        <item name="circleHoleColor">@color/black</item>
+        <item name="circleHoleColor">@color/black_200</item>
         <item name="chartTextColor">@color/gray_200</item>
         <item name="fillBackground">@drawable/bg_chart_fill_dark</item>
     </style>
@@ -23,6 +23,16 @@
     <style name="TextPrimary" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/gray_200</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="ThemeToolbar">
+        <item name="titleTextAppearance">@style/TextToolbar</item>
+        <item name="android:background">@color/black_150</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextToolbar" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="TextSecondary" parent="TextAppearance.AppCompat.Caption">

@@ -18,4 +18,40 @@
         <item>15</item>
         <item>25</item>
     </string-array>
+    <string-array name="currency_names">
+        <item>AMD:Армянский драм</item>
+        <item>AUD:Австралийский доллар</item>
+        <item>AZN:Азербайджанский манат</item>
+        <item>BGN:Болгарский лев</item>
+        <item>BRL:Бразильский реал</item>
+        <item>BYN:Белорусский рубль</item>
+        <item>CAD:Канадский доллар</item>
+        <item>CHF:Швейцарский франк</item>
+        <item>CNY:Китайский юань</item>
+        <item>CZK:Чешская крона</item>
+        <item>DKK:Датская крона</item>
+        <item>EUR:Евро</item>
+        <item>GBP:Фунт стерлингов Великобритании</item>
+        <item>HKD:Гонконгский доллар</item>
+        <item>HUF:Венгерский форинт</item>
+        <item>INR:Индийский рупий</item>
+        <item>JPY:Японская йена</item>
+        <item>KGS:Киргизский сом</item>
+        <item>KRW:Вон Республики Корея</item>
+        <item>KZT:Казахстанский тенге</item>
+        <item>MDL:Молдавский лей</item>
+        <item>NOK:Норвежская крона</item>
+        <item>PLN:Польский злотый</item>
+        <item>RON:Румынский лей</item>
+        <item>SEK:Шведская крона</item>
+        <item>SGD:Сингапурский доллар</item>
+        <item>TJS:Таджикский сомони</item>
+        <item>TMT:Новый туркменский манат</item>
+        <item>TRY:Турецкая лира</item>
+        <item>UAH:Украинская гривна</item>
+        <item>USD:Доллар США</item>
+        <item>UZS:Узбекский сум</item>
+        <item>XDR:СДР (специальные права заимствования)</item>
+        <item>ZAR:Южноафриканский рэнд</item>
+    </string-array>
 </resources>
