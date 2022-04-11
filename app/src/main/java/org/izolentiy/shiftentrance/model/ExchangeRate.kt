@@ -8,7 +8,7 @@ import java.util.*
 data class ExchangeRate(
     @PrimaryKey
     val date: Date = Date(),
-    val previousDate: String = "",
+    val previousDate: Date = Date(),
     val previousURL: String = "",
     val timestamp: String = "",
     val loaded: Date = Date(),

@@ -3,6 +3,56 @@
     <string name="base_currency_format">%1$.2f %2$s</string>
     <string name="currency_format">%1$s %2$d</string>
     <string name="enter_sum_hint">Enter sum</string>
-    <string name="data_loaded">Rates loaded: %1$s</string>
+    <string name="data_loaded">Rate loaded: %1$s</string>
+    <string name="local_data_loaded">Latest saved rate loaded: %1$s</string>
     <string name="empty_data">No exchange rate</string>
+    <string name="unable_to_download">Unable to download rate from network</string>
+    <string name="rates_to_display">Rates to display:</string>
+    <string name="no_char_data">No chart data</string>
+    <string name="loading_chart_data">Loading chart data</string>
+    <string name="error_chart_data">Error while loading chart data</string>
+
+    <string name="test_currency_name">Australian Dollar</string>
+
+    <string-array name="load_rate_count">
+        <item>8</item>
+        <item>15</item>
+        <item>25</item>
+    </string-array>
+    <string-array name="currency_names">
+        <item>AMD:Armenia Dram</item>
+        <item>AUD:Australian Dollar</item>
+        <item>AZN:Azerbaijan Manat</item>
+        <item>BGN:Bulgarian lev</item>
+        <item>BRL:Brazil Real</item>
+        <item>BYN:Belarussian Ruble</item>
+        <item>CAD:Canadian Dollar</item>
+        <item>CHF:Swiss Franc</item>
+        <item>CNY:China Yuan</item>
+        <item>CZK:Czech Koruna</item>
+        <item>DKK:Danish Krone</item>
+        <item>EUR:Euro</item>
+        <item>GBP:British Pound Sterling</item>
+        <item>HKD:Hong Kong Dollar</item>
+        <item>HUF:Hungarian Forint</item>
+        <item>INR:Indian Rupee</item>
+        <item>JPY:Japanese Yen</item>
+        <item>KGS:Kyrgyzstan Som</item>
+        <item>KRW:South Korean Won</item>
+        <item>KZT:Kazakhstan Tenge</item>
+        <item>MDL:Moldova Lei</item>
+        <item>NOK:Norwegian Krone</item>
+        <item>PLN:Polish Zloty</item>
+        <item>RON:Romanian Leu</item>
+        <item>SEK:Swedish Krona</item>
+        <item>SGD:Singapore Dollar</item>
+        <item>TJS:Tajikistan Ruble</item>
+        <item>TMT:New Turkmenistan Manat</item>
+        <item>TRY:Turkish Lira</item>
+        <item>UAH:Ukrainian Hryvnia</item>
+        <item>USD:US Dollar</item>
+        <item>UZS:Uzbekistan Sum</item>
+        <item>XDR:SDR</item>
+        <item>ZAR:S.African Rand</item>
+    </string-array>
 </resources>

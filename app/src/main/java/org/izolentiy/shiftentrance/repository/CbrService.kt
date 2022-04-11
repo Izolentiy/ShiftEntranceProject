@@ -21,6 +21,7 @@ interface CbrService {
         @Path("date") date: String
     ): Response<ExchangeRate>
 
+    // https://www.cbr-xml-daily.ru/archive/2022/03/29/daily_json.js
     @GET
     suspend fun getExchangeByUrl(
         @Url url: String

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Курсы валют</string>
+    <string name="base_currency_format">%1$.2f %2$s</string>
+    <string name="currency_format">%1$s %2$d</string>
+    <string name="enter_sum_hint">Введите сумму</string>
+    <string name="data_loaded">Курс загружен: %1$s</string>
+    <string name="local_data_loaded">Загружен последний сохранённый курс: %1$s</string>
+    <string name="empty_data">Нет курсов</string>
+    <string name="unable_to_download">Не получилось загрузить курсы из сети</string>
+    <string name="rates_to_display">Загрузить последние:</string>
+    <string name="no_char_data">Нет данных</string>
+    <string name="loading_chart_data">Загрузка данных</string>
+    <string name="error_chart_data">Ошибка во время загрузки</string>
+
+    <string name="test_currency_name">Австралийский доллар</string>
+
+    <string-array name="load_rate_count">
+        <item>8</item>
+        <item>15</item>
+        <item>25</item>
+    </string-array>
+    <string-array name="currency_names">
+        <item>AMD:Армянский драм</item>
+        <item>AUD:Австралийский доллар</item>
+        <item>AZN:Азербайджанский манат</item>
+        <item>BGN:Болгарский лев</item>
+        <item>BRL:Бразильский реал</item>
+        <item>BYN:Белорусский рубль</item>
+        <item>CAD:Канадский доллар</item>
+        <item>CHF:Швейцарский франк</item>
+        <item>CNY:Китайский юань</item>
+        <item>CZK:Чешская крона</item>
+        <item>DKK:Датская крона</item>
+        <item>EUR:Евро</item>
+        <item>GBP:Фунт стерлингов Великобритании</item>
+        <item>HKD:Гонконгский доллар</item>
+        <item>HUF:Венгерский форинт</item>
+        <item>INR:Индийский рупий</item>
+        <item>JPY:Японская йена</item>
+        <item>KGS:Киргизский сом</item>
+        <item>KRW:Вон Республики Корея</item>
+        <item>KZT:Казахстанский тенге</item>
+        <item>MDL:Молдавский лей</item>
+        <item>NOK:Норвежская крона</item>
+        <item>PLN:Польский злотый</item>
+        <item>RON:Румынский лей</item>
+        <item>SEK:Шведская крона</item>
+        <item>SGD:Сингапурский доллар</item>
+        <item>TJS:Таджикский сомони</item>
+        <item>TMT:Новый туркменский манат</item>
+        <item>TRY:Турецкая лира</item>
+        <item>UAH:Украинская гривна</item>
+        <item>USD:Доллар США</item>
+        <item>UZS:Узбекский сум</item>
+        <item>XDR:СДР (специальные права заимствования)</item>
+        <item>ZAR:Южноафриканский рэнд</item>
+    </string-array>
+</resources>

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="item_currency_padding">12dp</dimen>
+    <dimen name="progress_bar_margin">36dp</dimen>
+    <dimen name="marker_padding">6dp</dimen>
+    <dimen name="marker_detail_corner_radius">12dp</dimen>
+    <dimen name="round_marker_diameter">10dp</dimen>
+    <dimen name="round_marker_stroke_width">3dp</dimen>
 </resources>

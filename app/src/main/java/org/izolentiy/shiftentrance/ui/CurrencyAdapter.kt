@@ -11,7 +11,8 @@ import org.izolentiy.shiftentrance.model.Currency
 import org.izolentiy.shiftentrance.databinding.ItemCurrencyBinding as Binding
 
 class CurrencyAdapter(
-    private val onCurrencyClick: (Currency) -> Unit
+    private val onCurrencyClick: (Currency) -> Unit,
+    private val currencyNames: Map<String, String>
 ) : ListAdapter<Currency, CurrencyAdapter.ViewHolder>(CurrencyComparator) {
 
     inner class ViewHolder(
@@ -25,7 +26,7 @@ class CurrencyAdapter(
             binding.apply {
                 textViewNominalCharCode.text = root.resources
                     .getString(R.string.currency_format, charCode, nominal)
-                textViewName.text = name
+                textViewName.text = currencyNames[charCode]
                 textViewExchangeRate.text = root.resources
                     .getString(R.string.base_currency_format, value, BASE_CURRENCY)
             }
