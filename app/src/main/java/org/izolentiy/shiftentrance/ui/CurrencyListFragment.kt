@@ -50,8 +50,6 @@ class CurrencyListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.title = resources.getString(R.string.app_name)
-
         _binding = FragmentCurrencyListBinding.inflate(inflater, container, false)
 
         val currencyNames = mutableMapOf<String, String>()
@@ -64,6 +62,7 @@ class CurrencyListFragment : Fragment() {
 
         val currencyAdapter = CurrencyAdapter(onCurrencyClick, currencyNames)
         binding.apply {
+            toolbarList.title = resources.getString(R.string.app_name)
             swipeRefreshLayout.setOnRefreshListener {
                 viewModel.reloadData()
                 errorShowedOnce = false
@@ -87,7 +86,7 @@ class CurrencyListFragment : Fragment() {
         _binding = null
     }
 
-    private fun handleResource(resource: Resource<out ExchangeRate?>, adapter: CurrencyAdapter) {
+    private fun handleResource(resource: Resource<ExchangeRate>, adapter: CurrencyAdapter) {
         val rate = resource.data
         when (resource.status) {
             Resource.Status.ERROR -> {
@@ -122,7 +121,7 @@ class CurrencyListFragment : Fragment() {
     }
 
     private fun showSnackBar(string: String, time: Int, isError: Boolean) {
-        val view = activity?.findViewById<View>(R.id.fragment_container)!!
+        val view = activity?.findViewById<View>(binding.root.id)!!
         val snackbar: Snackbar = Snackbar.make(view, string, time)
         displayedSnackbar = snackbar
 

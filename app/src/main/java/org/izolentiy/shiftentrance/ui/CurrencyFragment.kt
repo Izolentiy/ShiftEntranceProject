@@ -55,17 +55,17 @@ class CurrencyFragment : Fragment() {
             nominal = getInt(NOMINAL)
         }
 
-        // Set activity title
-        val arrayItem = resources.getStringArray(R.array.currency_names)
-            .find { it.contains(charCode) }
-        if (arrayItem != null) {
-            // array item = "key:value"
-            val title = arrayItem.split(":").last()
-            activity?.title = title
-        }
-
         _binding = FragmentCurrencyBinding.inflate(inflater, container, false)
         binding.apply {
+            // Set toolbar title
+            val arrayItem = resources.getStringArray(R.array.currency_names)
+                .find { it.contains(charCode) }
+            if (arrayItem != null) {
+                // array item = "key:value"
+                val title = arrayItem.split(":").last()
+                toolbarDetail.title = title
+            }
+
             root.setOnClickListener { view ->
                 val imm: InputMethodManager? = requireActivity()
                     .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
