@@ -23,3 +23,5 @@
 - CoroutinesTest
 - Turbine
 - MockWebServer
+- Kaspresso (Благослави боже команду из лаборатории Касперского)
+- AndroidXTest
