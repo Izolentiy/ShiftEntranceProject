@@ -13,6 +13,8 @@
     <string name="loading_chart_data">Загрузка данных</string>
     <string name="error_chart_data">Ошибка во время загрузки</string>
 
+    <string name="test_currency_name">Австралийский доллар</string>
+
     <string-array name="load_rate_count">
         <item>8</item>
         <item>15</item>

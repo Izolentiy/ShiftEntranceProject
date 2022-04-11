@@ -33,7 +33,7 @@ val ERROR_BODY = """{"type": "error","message": "Nothing."}"""
 
 fun String.toDate(): Date = DATE_FORMAT.parse(this)!!
 
-fun Long.toTimeout(callCount: Int) = this * callCount + 100  // wait extra 100 ms
+fun Long.toTimeout(delayMult: Int) = this * delayMult + 100  // wait extra 100 ms
 
 fun <T> remoteError(): Response<T> = Response.error<T>(403, ERROR_BODY)
 

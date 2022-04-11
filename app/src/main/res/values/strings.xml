@@ -12,6 +12,8 @@
     <string name="loading_chart_data">Loading chart data</string>
     <string name="error_chart_data">Error while loading chart data</string>
 
+    <string name="test_currency_name">Australian Dollar</string>
+
     <string-array name="load_rate_count">
         <item>8</item>
         <item>15</item>
