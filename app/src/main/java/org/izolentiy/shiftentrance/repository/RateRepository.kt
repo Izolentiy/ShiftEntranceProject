@@ -1,13 +1,12 @@
 package org.izolentiy.shiftentrance.repository
 
 import android.util.Log
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import org.izolentiy.shiftentrance.API_CALL_DELAY
 import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import java.util.*
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 class RateRepository @Inject constructor(
     private val rateDao: RateDao,
@@ -20,25 +19,23 @@ class RateRepository @Inject constructor(
 
     private val callManager = RemoteCallManager()
 
-    val exchangeRate: Flow<Resource<out ExchangeRate?>> = flow {
+    val exchangeRate: Flow<Resource<ExchangeRate>> = flow {
         loadingTrigger.collect {
-            val startTime = System.currentTimeMillis()
             Log.w(TAG, "exchangeRate: LOADING TRIGGERED")
-            emit(Resource.loading())
-            emit(loadRate(shouldReload))
-            shouldReload = false
-            val endTime = System.currentTimeMillis() - startTime
-            Log.w(TAG, "exchangeRate: LOADING COMPLETED $endTime ms")
+            measureTimeMillis {
+                emit(Resource.loading())
+                emit(loadRate(shouldReload))
+                shouldReload = false
+            }.also { Log.w(TAG, "exchangeRate: LOADING COMPLETED $it ms") }
         }
     }
     val latestRates: Flow<Resource<List<ExchangeRate>?>> = flow {
         ratesToLoad.filter { it > 0 }.collect { count ->
-            val startTime = System.currentTimeMillis()
             Log.w(TAG, "latestRates: LOADING LATEST $count RATES")
-            emit(Resource.loading())
-            emit(loadLatestRates(count))
-            val endTime = System.currentTimeMillis() - startTime
-            Log.w(TAG, "latestRates: LOADING OF $count RATES COMPLETED $endTime ms")
+            measureTimeMillis {
+                emit(Resource.loading())
+                emit(loadLatestRates(count))
+            }.also { Log.w(TAG, "latestRates: LOADING OF $count RATES COMPLETED $it ms") }
         }
     }
 
