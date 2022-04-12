@@ -1,9 +1,7 @@
 package org.izolentiy.shiftentrance
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.LocaleList
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
@@ -58,3 +56,5 @@ fun resolveDrawable(context: Context, attr: Int): Drawable? {
     }.resourceId
     return ContextCompat.getDrawable(context, drawableResId)
 }
+
+data class FocusedEditTextId(var value: Int)

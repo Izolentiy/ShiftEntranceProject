@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.mikephil.charting.data.Entry
@@ -19,6 +18,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import dagger.hilt.android.AndroidEntryPoint
 import org.izolentiy.shiftentrance.BASE_CURRENCY
 import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
+import org.izolentiy.shiftentrance.FocusedEditTextId
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyBinding
 import org.izolentiy.shiftentrance.model.ExchangeRate
@@ -37,7 +37,7 @@ class CurrencyFragment : Fragment() {
     private val symbols = DecimalFormatSymbols(Locale("en", "US"))
     private val displayFormat = DecimalFormat("#.##", symbols)
 
-    private var focusedEditTextId: Int? = null
+    private val focusedEditTextId = FocusedEditTextId(-1)
 
     private var charCode: String = ""
     private var rate: Double = 0.0
@@ -110,7 +110,7 @@ class CurrencyFragment : Fragment() {
             val selText = if (selected != 0.0f) displayFormat.format(selected) else ""
             val baseText = if (base != 0.0f) displayFormat.format(base) else ""
 
-            when (focusedEditTextId) {
+            when (focusedEditTextId.value) {
                 binding.editTextSelectedCurrency.id -> {
                     binding.editTextBaseCurrency.setText(baseText)
                 }
@@ -157,21 +157,11 @@ class CurrencyFragment : Fragment() {
     }
 
     private fun configureEditText(editText: EditText) {
-        editText.addTextChangedListener { text ->
-            if (focusedEditTextId == editText.id) {
-                if (text.isNullOrBlank()) {
-                    viewModel.baseSum.value = 0.0f
-                    return@addTextChangedListener
-                }
-                val value = text.toString().toFloat()
-                viewModel.baseSum.value =
-                    if (editText.id == binding.editTextBaseCurrency.id) value
-                    else value * rate.toFloat()
-            }
-        }
         editText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) focusedEditTextId = view.id
+            if (hasFocus) focusedEditTextId.value = view.id
         }
+        val watcher = InputWatcher(focusedEditTextId, editText, viewModel, rate, binding)
+        editText.addTextChangedListener(watcher)
     }
 
     private fun prepareData(rateList: List<ExchangeRate>?): LineData? {
