@@ -35,6 +35,3 @@ google-services.json
 *.hprof
 
 # --- Other files
-InputWatcher.kt
-NumberWatcher.java
-regular_rate.json

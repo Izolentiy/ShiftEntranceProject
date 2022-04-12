@@ -28,9 +28,11 @@ class InputWatcher(
             val expBeforeDot = input.substringBefore('.')
             val expContainsDec = input.contains('.')
 
-            Log.d(TAG, "watcher: input $input")
-            Log.d(TAG, "watcher: beforeDot $expBeforeDot")
-            Log.d(TAG, "watcher: afterDot ${if (expContainsDec) expAfterDot else ""}")
+            Log.d(TAG, "afterTextChanged: input $input")
+            Log.d(TAG, "afterTextChanged: beforeDot $expBeforeDot")
+
+            val afterDot = if (expContainsDec) expAfterDot else ""
+            Log.d(TAG, "afterTextChanged: afterDot $afterDot")
 
             val calculate = {
                 val value = input.toFloat()
@@ -39,18 +41,17 @@ class InputWatcher(
                     else value * rate.toFloat()
             }
 
-            when {
-                input.isBlank() -> {
-                    viewModel.baseSum.value = 0.0f
-                }
-                input.startsWith('.') -> {
+            if (input.isBlank()) {
+                viewModel.baseSum.value = 0.0f
+            } else {
+                if (input.startsWith('.')) {
                     input = "0.$expAfterDot"
                     editText.apply {
                         setText(input)
                         setSelection(input.length)
                     }
                 }
-                (expBeforeDot.length > 1 && expBeforeDot.startsWith('0')) -> {
+                if (expBeforeDot.length > 1 && expBeforeDot.startsWith('0')) {
                     val nonZeroDigIndex = expBeforeDot.indexOfFirst { it != '0' }
 
                     // If int part is made of zeros, take only one
@@ -63,9 +64,8 @@ class InputWatcher(
                         setText(input)
                         setSelection(intPart.length)
                     }
-                    calculate.invoke()
                 }
-                (expContainsDec && expAfterDot.length > 2) -> {
+                if (expContainsDec && expAfterDot.length > 2) {
                     val sel = editText.selectionStart
                     val decPart = expAfterDot.substring(0, 2)
 
@@ -74,9 +74,8 @@ class InputWatcher(
                         setText(input)
                         setSelection(Integer.min(sel, input.length))
                     }
-                    calculate.invoke()
                 }
-                else -> calculate.invoke()
+                calculate.invoke()
             }
 
             editText.addTextChangedListener(this)

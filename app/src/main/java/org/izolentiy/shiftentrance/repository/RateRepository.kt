@@ -2,6 +2,7 @@ package org.izolentiy.shiftentrance.repository
 
 import android.util.Log
 import kotlinx.coroutines.flow.*
+import okio.IOException
 import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import java.util.*
@@ -62,7 +63,7 @@ class RateRepository @Inject constructor(
             Log.d(TAG, "loadExchangeRate: NO_NEED_TO_FETCH")
             Resource.success(dataFromDb)
         }
-    } catch (exception: Throwable) {
+    } catch (exception: IOException) {
         Log.e(TAG, "loadRate: ${exception.message}")
         val dataFromDb = rateDao.getLatestRate()
         Resource.error(exception, dataFromDb)
@@ -82,6 +83,7 @@ class RateRepository @Inject constructor(
         var previousDate = latestRate.previousDate
 
         val rates = mutableListOf<ExchangeRate>()
+
         rates.add(latestRate)
         date = CHART_DATE_FORMAT.format(latestRate.date)
         endTime = System.currentTimeMillis() - startTime
@@ -101,7 +103,7 @@ class RateRepository @Inject constructor(
             previousDate = previousRate.previousDate
         }
         Resource.success(rates)
-    } catch (exception: Throwable) {
+    } catch (exception: IOException) {
         Log.e(TAG, "loadLatestRates: ${exception.message}")
         Resource.error(exception)
     }
