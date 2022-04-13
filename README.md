@@ -1,8 +1,8 @@
 # ShiftEntranceProject
 Тестовое задание от ЦФТ
 
-<img src="screenshots/Screenshot_20220330_021926.png" width="330"> <img src="screenshots/Screenshot_20220330_022004.png" width="330">
-<img src="screenshots/Screenshot_20220330_022156.png" width="330"> <img src="screenshots/Screenshot_20220330_022131.png" width="330">
+<img src="screenshots/Screenshot_20220413_165436.png" width="330"> <img src="screenshots/Screenshot_20220413_165649.png" width="330">
+<img src="screenshots/Screenshot_20220413_165659.png" width="330"> <img src="screenshots/Screenshot_20220413_165616.png" width="330">
 
 ## Библиотеки:
 
