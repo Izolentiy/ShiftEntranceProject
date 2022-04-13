@@ -29,16 +29,30 @@ internal class CurrencyListFragmentTest : TestCase() {
             }
             step("Check currency list size") {
                 if (currencyList.getSize() > 0) {
-                    snackbar.text {
-                        isDisplayed()
-                        hasFormattedText(R.string.data_loaded)
-                    }
+                    snackbar.text.hasFormattedText(R.string.data_loaded)
                 } else {
                     snackbar {
                         text.hasText(R.string.unable_to_download)
                         action.click()
                         text.hasText(R.string.empty_data)
                     }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun snackbar_after_swipe_refresh_show_error() = run {
+        CurrencyListScreen {
+            step("Swipe to refresh") {
+                swipeRefreshLayout.swipeDown()
+            }
+            step("Check snackbar text") {
+                snackbar {
+                    isDisplayed()
+                    text.hasText(R.string.unable_to_download)
+                    action.click()
+                    text.hasFormattedText(R.string.local_data_loaded)
                 }
             }
         }
