@@ -63,14 +63,18 @@ internal class CurrencyFragmentTest : TestCase() {
         }
         step("Verify edit text behavior") {
             CurrencyScreen {
-                InputScenario(
-                    editTextBaseCurrency,
-                    editTextSelectedCurrency, this
-                ).steps.invoke(this@run)
-                InputScenario(
-                    editTextSelectedCurrency,
-                    editTextBaseCurrency, this
-                ).steps.invoke(this@run)
+                scenario(
+                    InputScenario(
+                        editTextBaseCurrency,
+                        editTextSelectedCurrency, this
+                    )
+                )
+                scenario(
+                    InputScenario(
+                        editTextSelectedCurrency,
+                        editTextBaseCurrency, this
+                    )
+                )
             }
         }
     }
