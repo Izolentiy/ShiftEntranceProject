@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.*
 import okio.IOException
 import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
+import retrofit2.HttpException
 import java.util.*
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
@@ -53,8 +54,7 @@ class RateRepository @Inject constructor(
         val dataFromDb = rateDao.getLatestRate()
 
         if (fetch || dataFromDb == null || dataFromDb.currencies.isEmpty()) {
-            val dataFromNet = callManager.perform { rateService.getDailyRate().body() }
-                ?: throw Throwable("Empty fetch result")
+            val dataFromNet = callManager.perform { rateService.getDailyRate() }
             rateDao.insertExchangeRates(dataFromNet)
 
             Log.d(TAG, "loadExchangeRate: FETCHED_AND_SAVED")
@@ -63,8 +63,17 @@ class RateRepository @Inject constructor(
             Log.d(TAG, "loadExchangeRate: NO_NEED_TO_FETCH")
             Resource.success(dataFromDb)
         }
-    } catch (exception: IOException) {
+    } catch (exception: Throwable) {
         Log.e(TAG, "loadRate: ${exception.message}")
+        when(exception) {
+            is IllegalArgumentException ->
+                Log.e(TAG, "loadRate: Http is 2xx but fetch result is null")
+            is HttpException ->
+                Log.e(TAG, "loadRate: Http non 2xx status code")
+            is IOException ->
+                Log.e(TAG, "loadRate: Network error")
+            else -> throw exception
+        }
         val dataFromDb = rateDao.getLatestRate()
         Resource.error(exception, dataFromDb)
     }
@@ -76,7 +85,6 @@ class RateRepository @Inject constructor(
 
         // Get latest rate. Check if it is not null, if so fetch from network latest.
         val latestRate = loadLatestRate()
-            ?: throw Throwable("Fetch result is null")
 
         // Get date of previous rate.
         var previousURL = latestRate.previousURL
@@ -92,7 +100,6 @@ class RateRepository @Inject constructor(
         repeat(count - 1) { i ->
             // Check if in DB exists this rate, else if it is not, fetch it.
             val previousRate = loadPrevRate(previousDate, previousURL)
-                ?: throw Throwable("Loading previous rate returned null")
 
             rates.add(previousRate)
             date = CHART_DATE_FORMAT.format(previousRate.date)
@@ -103,25 +110,32 @@ class RateRepository @Inject constructor(
             previousDate = previousRate.previousDate
         }
         Resource.success(rates)
-    } catch (exception: IOException) {
+    } catch (exception: Throwable) {
         Log.e(TAG, "loadLatestRates: ${exception.message}")
+        when(exception) {
+            is IllegalArgumentException ->
+                Log.e(TAG, "loadLatestRates: Http 2xx but fetch result is null")
+            is HttpException ->
+                Log.e(TAG, "loadLatestRates: Http non 2xx status code")
+            is IOException ->
+                Log.e(TAG, "loadLatestRates: Network error")
+            else -> throw exception
+        }
         Resource.error(exception)
     }
 
-    private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate? {
+    private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate {
         return rateDao.getExchangeRateByDate(date)
             ?: callManager.perform {
-                rateService.getExchangeByUrl(url).body()
-                    ?.also { rateDao.insertExchangeRates(it) }
-            }
+                rateService.getExchangeByUrl(url)
+            }.also { rateDao.insertExchangeRates(it) }
     }
 
-    private suspend fun loadLatestRate(): ExchangeRate? {
+    private suspend fun loadLatestRate(): ExchangeRate {
         return rateDao.getLatestRate()
             ?: callManager.perform {
-                rateService.getDailyRate().body()
-                    ?.also { rateDao.insertExchangeRates(it) }
-            }
+                rateService.getDailyRate()
+            }.also { rateDao.insertExchangeRates(it) }
     }
 
     companion object {

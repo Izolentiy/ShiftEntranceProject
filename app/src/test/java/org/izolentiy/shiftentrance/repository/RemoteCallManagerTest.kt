@@ -6,11 +6,12 @@ import kotlinx.coroutines.withTimeout
 import org.izolentiy.shiftentrance.API_CALL_DELAY
 import org.izolentiy.shiftentrance.toTimeout
 import org.junit.jupiter.api.Test
+import retrofit2.Response
 
 @ExperimentalCoroutinesApi
 internal class RemoteCallManagerTest {
     private val callManager = RemoteCallManager()
-    private val work = suspend {  }
+    private val work: suspend () -> Response<Unit> = { Response.success(Unit) }
 
     @Test
     fun `single call doesn't delay`() = runTest {
