@@ -130,4 +130,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include
+        android:id="@+id/layout_error"
+        layout="@layout/layout_error" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

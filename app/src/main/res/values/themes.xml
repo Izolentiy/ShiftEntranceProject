@@ -20,10 +20,13 @@
         <item name="fillBackground">@drawable/bg_chart_fill_light</item>
     </style>
 
-    <style name="TextPrimary" parent="TextAppearance.AppCompat">
+    <style name="TextPrimary" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@color/gray_100</item>
-        <item name="android:textSize">20sp</item>
     </style>
+
+    <style name="TextSecondary" parent="TextAppearance.AppCompat.Body1" />
+
+    <style name="TextTertiary" parent="TextAppearance.AppCompat.Caption" />
 
     <style name="ThemeToolbar">
         <item name="titleTextAppearance">@style/TextToolbar</item>
@@ -34,6 +37,4 @@
     <style name="TextToolbar" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">17sp</item>
     </style>
-
-    <style name="TextSecondary" parent="TextAppearance.AppCompat.Caption" />
 </resources>

@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,6 +39,9 @@ const val RIGHT_EXTRA_OFFSET = 25f
 val CHART_DATE_FORMAT = SimpleDateFormat("dd MMM", Locale.ENGLISH)
 val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH)
 val MESSAGE_FORMAT = SimpleDateFormat("HH:mm dd.MM.yyyy XXX", Locale.ENGLISH)
+
+val SYMBOLS = DecimalFormatSymbols(Locale("en", "US"))
+val DISPLAY_FORMAT = DecimalFormat("#.##", SYMBOLS)
 
 fun Float.toStringDate(locale: Locale): String {
     val format = SimpleDateFormat("dd MMM", locale)

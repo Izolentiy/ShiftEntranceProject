@@ -12,6 +12,19 @@
     <string name="no_char_data">Нет данных</string>
     <string name="loading_chart_data">Загрузка данных</string>
     <string name="error_chart_data">Ошибка во время загрузки</string>
+    <string name="message_no_internet">Нет интернет соединения</string>
+    <string name="detail_no_internet">Включите передачу мобильных данных или WiFi и попробуйте снова</string>
+    <string name="message_401">Вы не авторизованы</string>
+    <string name="detail_401">Код состояния HTTP: 401</string>
+    <string name="message_400_500">Ошибка клиента</string>
+    <string name="detail_400_500">Код состояния HTTP: %1$d. %2$s</string>
+    <string name="message_500_600">Ошбика сервера</string>
+    <string name="detail_500_600">Код состояния HTTP: %1$d. %2$s. Попробуйте позже</string>
+    <string name="message_unexpected">Неожиданный ответ от сервера</string>
+    <string name="message_unknown">Неизвестная ошибка</string>
+    <string name="detail_unknown">Возникла неизвестная ошибка при загрузке данных.</string>
+    <string name="message_socket_timeout">Время ожидания подключения истекло</string>
+    <string name="retry_button">Повторить попытку</string>
 
     <string name="test_currency_name">Австралийский доллар</string>
 

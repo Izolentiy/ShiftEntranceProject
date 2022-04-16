@@ -1,13 +1,16 @@
 package org.izolentiy.shiftentrance.ui
 
 import android.content.Context
+import android.os.Bundle
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import org.izolentiy.shiftentrance.*
+import org.izolentiy.shiftentrance.model.ExchangeRate
 
 fun configureLineChart(lineChart: LineChart) {
     lineChart.apply {
@@ -78,3 +81,19 @@ fun preparedLineData(
         setDrawHighlightIndicators(false)
     }
 )
+
+fun prepareData(context: Context, args: Bundle, rateList: List<ExchangeRate>?): LineData? {
+    val charCode = args.getString(CurrencyFragment.CHAR_CODE)
+    val nominal = args.getInt(CurrencyFragment.NOMINAL)
+    val entries = if (rateList.isNullOrEmpty()) null
+    else rateList.reversed().map { rate ->
+        val currency = rate.currencies.find { it.charCode == charCode }!!
+
+        Entry(rate.date.time.toFloat(), currency.value.toFloat())
+    }
+
+    return if (!entries.isNullOrEmpty()) {
+        val label = "$nominal $charCode  >>  $BASE_CURRENCY"
+        preparedLineData(context, LineDataSet(entries, label))
+    } else null
+}

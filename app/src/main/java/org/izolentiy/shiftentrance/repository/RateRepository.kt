@@ -6,6 +6,7 @@ import okio.IOException
 import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import java.util.*
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
@@ -17,7 +18,7 @@ class RateRepository @Inject constructor(
 
     private var shouldReload = false
     private val loadingTrigger = MutableSharedFlow<Unit>(replay = 1).also { it.tryEmit(Unit) }
-    private val ratesToLoad = MutableStateFlow(0)
+    private val ratesToLoad = MutableSharedFlow<Int>(replay = 1)
 
     private val callManager = RemoteCallManager()
 
@@ -25,7 +26,7 @@ class RateRepository @Inject constructor(
         loadingTrigger.collect {
             Log.w(TAG, "exchangeRate: LOADING TRIGGERED")
             measureTimeMillis {
-                emit(Resource.loading())
+                emit(Resource.Loading)
                 emit(loadRate(shouldReload))
                 shouldReload = false
             }.also { Log.w(TAG, "exchangeRate: LOADING COMPLETED $it ms") }
@@ -35,14 +36,14 @@ class RateRepository @Inject constructor(
         ratesToLoad.filter { it > 0 }.collect { count ->
             Log.w(TAG, "latestRates: LOADING LATEST $count RATES")
             measureTimeMillis {
-                emit(Resource.loading())
+                emit(Resource.Loading)
                 emit(loadLatestRates(count))
             }.also { Log.w(TAG, "latestRates: LOADING OF $count RATES COMPLETED $it ms") }
         }
     }
 
     fun loadRates(count: Int) {
-        ratesToLoad.value = count
+        ratesToLoad.tryEmit(count)
     }
 
     fun reloadRate() {
@@ -58,24 +59,15 @@ class RateRepository @Inject constructor(
             rateDao.insertExchangeRates(dataFromNet)
 
             Log.d(TAG, "loadExchangeRate: FETCHED_AND_SAVED")
-            Resource.success(dataFromNet)
+            Resource.Success(dataFromNet)
         } else {
             Log.d(TAG, "loadExchangeRate: NO_NEED_TO_FETCH")
-            Resource.success(dataFromDb)
+            Resource.Success(dataFromDb)
         }
     } catch (exception: Throwable) {
-        Log.e(TAG, "loadRate: ${exception.message}")
-        when(exception) {
-            is IllegalArgumentException ->
-                Log.e(TAG, "loadRate: Http is 2xx but fetch result is null")
-            is HttpException ->
-                Log.e(TAG, "loadRate: Http non 2xx status code")
-            is IOException ->
-                Log.e(TAG, "loadRate: Network error")
-            else -> throw exception
-        }
+        handleException(exception)
         val dataFromDb = rateDao.getLatestRate()
-        Resource.error(exception, dataFromDb)
+        Resource.Error(exception, dataFromDb)
     }
 
     private suspend fun loadLatestRates(count: Int): Resource<List<ExchangeRate>?> = try {
@@ -109,19 +101,10 @@ class RateRepository @Inject constructor(
             previousURL = previousRate.previousURL
             previousDate = previousRate.previousDate
         }
-        Resource.success(rates)
+        Resource.Success(rates)
     } catch (exception: Throwable) {
-        Log.e(TAG, "loadLatestRates: ${exception.message}")
-        when(exception) {
-            is IllegalArgumentException ->
-                Log.e(TAG, "loadLatestRates: Http 2xx but fetch result is null")
-            is HttpException ->
-                Log.e(TAG, "loadLatestRates: Http non 2xx status code")
-            is IOException ->
-                Log.e(TAG, "loadLatestRates: Network error")
-            else -> throw exception
-        }
-        Resource.error(exception)
+        handleException(exception)
+        Resource.Error(exception)
     }
 
     private suspend fun loadPrevRate(date: Date, url: String): ExchangeRate {
@@ -136,6 +119,20 @@ class RateRepository @Inject constructor(
             ?: callManager.perform {
                 rateService.getDailyRate()
             }.also { rateDao.insertExchangeRates(it) }
+    }
+
+    private fun handleException(exception: Throwable) {
+        when (exception) {
+            is IllegalArgumentException ->
+                Log.e(TAG, "loadLatestRates: Http 2xx but fetch result is null")
+            is SocketTimeoutException ->
+                Log.e(TAG, "loadLatestRates: Timeout exception")
+            is HttpException ->
+                Log.e(TAG, "loadLatestRates: Http non 2xx status code")
+            is IOException ->
+                Log.e(TAG, "loadLatestRates: Network error")
+            else -> throw exception
+        }
     }
 
     companion object {

@@ -11,6 +11,19 @@
     <string name="no_char_data">No chart data</string>
     <string name="loading_chart_data">Loading chart data</string>
     <string name="error_chart_data">Error while loading chart data</string>
+    <string name="message_no_internet">No internet connection</string>
+    <string name="detail_no_internet">Check your WiFi or Mobile data and retry</string>
+    <string name="message_401">Unauthenticated</string>
+    <string name="detail_401">Http status code: 401</string>
+    <string name="message_400_500">Client error</string>
+    <string name="detail_400_500">Http status code: %1$d. %2$s</string>
+    <string name="message_500_600">Server error</string>
+    <string name="detail_500_600">Http status code: %1$d. %2$s.\nTry again later</string>
+    <string name="message_unexpected">Unexpected response</string>
+    <string name="message_unknown">Unknown error</string>
+    <string name="detail_unknown">An unknown error occurred while loading data</string>
+    <string name="message_socket_timeout">Connection timeout</string>
+    <string name="retry_button">Retry</string>
 
     <string name="test_currency_name">Australian Dollar</string>
     <string name="test_currency_char_code" translatable="false">AUD</string>

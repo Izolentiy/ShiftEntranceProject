@@ -16,6 +16,8 @@ class CurrencyListViewModel @Inject constructor(
     private val rateRepository: RateRepository
 ) : ViewModel() {
 
+    var errorShowedOnce = false
+
     val exchangeRate: LiveData<Resource<ExchangeRate>> =
         rateRepository.exchangeRate.flowOn(Dispatchers.IO).asLiveData()
 

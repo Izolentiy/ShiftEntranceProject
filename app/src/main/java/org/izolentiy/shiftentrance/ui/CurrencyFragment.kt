@@ -10,22 +10,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Spinner
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import dagger.hilt.android.AndroidEntryPoint
 import org.izolentiy.shiftentrance.BASE_CURRENCY
-import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
+import org.izolentiy.shiftentrance.DISPLAY_FORMAT
 import org.izolentiy.shiftentrance.FocusedEditTextId
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyBinding
 import org.izolentiy.shiftentrance.model.ExchangeRate
 import org.izolentiy.shiftentrance.repository.Resource
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.*
 
 @AndroidEntryPoint
 class CurrencyFragment : Fragment() {
@@ -33,27 +29,14 @@ class CurrencyFragment : Fragment() {
     private var _binding: FragmentCurrencyBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CurrencyViewModel by viewModels()
-
-    private val symbols = DecimalFormatSymbols(Locale("en", "US"))
-    private val displayFormat = DecimalFormat("#.##", symbols)
-
     private val focusedEditTextId = FocusedEditTextId(-1)
-
-    private var charCode: String = ""
-    private var rate: Double = 0.0
-    private var nominal: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Process arguments
-        arguments?.apply {
-            rate = getDouble(RATE)
-            charCode = getString(CHAR_CODE)!!
-            nominal = getInt(NOMINAL)
-        }
+        val charCode = requireArguments().getString(CHAR_CODE)!!
 
         _binding = FragmentCurrencyBinding.inflate(inflater, container, false)
         binding.apply {
@@ -76,19 +59,7 @@ class CurrencyFragment : Fragment() {
             textViewBaseCurrency.text = BASE_CURRENCY
             textViewSelectedCurrency.text = charCode
 
-            val spinnerItem = R.layout.spinner_text
-            val arrayAdapter = ArrayAdapter
-                .createFromResource(requireContext(), R.array.load_rate_count, spinnerItem)
-            arrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown)
-
-            spinnerCount.adapter = arrayAdapter
-            spinnerCount.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?, view: View?, pos: Int, foo: Long
-                ) = viewModel.loadLatestRates(parent?.getItemAtPosition(pos).toString().toInt())
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {}
-            }
+            configureSpinner(spinnerCount)
 
             configureEditText(editTextBaseCurrency)
             configureEditText(editTextSelectedCurrency)
@@ -103,25 +74,25 @@ class CurrencyFragment : Fragment() {
             }
         }
 
-        val exchangeRate = rate.toFloat()
+        val exchangeRate = requireArguments().getDouble(RATE).toFloat()
         viewModel.baseSum.observe(viewLifecycleOwner) { base ->
             val selected = base / exchangeRate
 
-            val selText = if (selected != 0.0f) displayFormat.format(selected) else ""
-            val baseText = if (base != 0.0f) displayFormat.format(base) else ""
+            val selText = if (selected != 0.0f) DISPLAY_FORMAT.format(selected) else ""
+            val baseText = if (base != 0.0f) DISPLAY_FORMAT.format(base) else ""
 
-            when (focusedEditTextId.value) {
-                binding.editTextSelectedCurrency.id -> {
-                    binding.editTextBaseCurrency.setText(baseText)
-                }
-                binding.editTextBaseCurrency.id -> {
-                    binding.editTextSelectedCurrency.setText(selText)
+            with(binding) {
+                when (focusedEditTextId.value) {
+                    editTextSelectedCurrency.id ->
+                        editTextBaseCurrency.setText(baseText)
+                    editTextBaseCurrency.id ->
+                        editTextSelectedCurrency.setText(selText)
                 }
             }
         }
 
         viewModel.latestRates.observe(viewLifecycleOwner) { resource ->
-            handleResult(resource)
+            handleResource(resource)
         }
 
         return binding.root
@@ -132,27 +103,63 @@ class CurrencyFragment : Fragment() {
         _binding = null
     }
 
-    private fun handleResult(resource: Resource<List<ExchangeRate>?>) {
-        val latestRates = resource.data
-        var noDataText = ""
-        when (resource.status) {
-            Resource.Status.ERROR -> {
-                binding.progressBar.visibility = View.GONE
-                noDataText = getString(R.string.error_chart_data)
-            }
-            Resource.Status.LOADING -> {
-                binding.progressBar.visibility = View.VISIBLE
-                noDataText = getString(R.string.loading_chart_data)
-            }
-            Resource.Status.SUCCESS -> {
-                binding.progressBar.visibility = View.GONE
-                noDataText = getString(R.string.no_char_data)
+    private fun handleResource(resource: Resource<List<ExchangeRate>?>) = with(binding) {
+        progressBar.isVisible = resource is Resource.Loading
+        layoutError.root.isVisible = resource is Resource.Error
+
+        with(layoutError) {
+            if (resource is Resource.Error) {
+                val errorTarget = ErrorTarget(
+                    messageTarget = textViewErrorMessage,
+                    detailTarget = textViewErrorDetail,
+                    actionTarget = buttonRetry,
+                    requireContext()
+                )
+                Log.e(TAG, "handleResource: ${resource.error}")
+                handleError(resource.error, errorTarget)
+                buttonRetry.setOnClickListener {
+                    val count = spinnerCount.selectedItem.toString().toInt()
+                    Log.e(TAG, "handleResource: $count")
+                    viewModel.loadLatestRates(count)
+                }
             }
         }
-        binding.lineChart.apply {
-            data = prepareData(latestRates)
+        val latestRates: List<ExchangeRate>?
+        val noDataText: String
+        when (resource) {
+            is Resource.Loading -> {
+                latestRates = null
+                noDataText = getString(R.string.loading_chart_data)
+            }
+            is Resource.Success -> {
+                latestRates = resource.data
+                noDataText = getString(R.string.no_char_data)
+            }
+            is Resource.Error -> {
+                latestRates = resource.data
+                noDataText = getString(R.string.error_chart_data)
+            }
+        }
+        lineChart.apply {
+            lineChart.data = prepareData(context, requireArguments(), latestRates)
             setNoDataText(noDataText)
             invalidate()
+        }
+    }
+
+    private fun configureSpinner(spinner: Spinner) {
+        val spinnerItem = R.layout.spinner_text
+        val arrayAdapter = ArrayAdapter
+            .createFromResource(requireContext(), R.array.load_rate_count, spinnerItem)
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown)
+
+        spinner.adapter = arrayAdapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?, pos: Int, foo: Long
+            ) = viewModel.loadLatestRates(parent?.getItemAtPosition(pos).toString().toInt())
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
@@ -160,25 +167,9 @@ class CurrencyFragment : Fragment() {
         editText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus) focusedEditTextId.value = view.id
         }
+        val rate = requireArguments().getDouble(RATE)
         val watcher = InputWatcher(focusedEditTextId, editText, viewModel, rate, binding)
         editText.addTextChangedListener(watcher)
-    }
-
-    private fun prepareData(rateList: List<ExchangeRate>?): LineData? {
-        val entries = if (rateList.isNullOrEmpty()) null
-        else rateList.reversed().map { rate ->
-            val currency = rate.currencies.find { it.charCode == charCode }!!
-
-            val info = "${currency.value}, ${CHART_DATE_FORMAT.format(rate.date)}"
-            Log.i(TAG, "prepareData: $info")
-
-            Entry(rate.date.time.toFloat(), currency.value.toFloat())
-        }
-
-        return if (!entries.isNullOrEmpty()) {
-            val label = "$nominal $charCode  >>  $BASE_CURRENCY"
-            preparedLineData(requireContext(), LineDataSet(entries, label))
-        } else null
     }
 
     companion object {
