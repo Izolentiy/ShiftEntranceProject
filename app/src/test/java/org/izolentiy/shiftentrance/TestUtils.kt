@@ -35,6 +35,6 @@ fun String.toDate(): Date = DATE_FORMAT.parse(this)!!
 
 fun Long.toTimeout(delayMult: Int) = this * delayMult + 100  // wait extra 100 ms
 
-fun <T> remoteError(): Response<T> = Response.error<T>(403, ERROR_BODY)
+fun <T> remoteError(): Response<T> = Response.error(403, ERROR_BODY)
 
 fun <T> remoteSuccess(body: T): Response<T> = Response.success(body)

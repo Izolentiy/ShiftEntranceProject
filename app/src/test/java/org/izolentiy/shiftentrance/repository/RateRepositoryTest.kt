@@ -36,8 +36,8 @@ internal class RateRepositoryTest {
             coEvery { dao.getLatestRate() } returns RATE_SAVED_BEFORE
 
             repos.exchangeRate.testFlow {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.success(RATE_SAVED_BEFORE), awaitItem())
+                assertEquals(Resource.Loading, awaitItem())
+                assertEquals(RATE_SAVED_BEFORE, (awaitItem() as Resource.Success).data)
             }
         }
 
@@ -49,8 +49,8 @@ internal class RateRepositoryTest {
 
             repos.reloadRate()
             repos.exchangeRate.testFlow {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.success(RATE_FROM_NET), awaitItem())
+                assertEquals(Resource.Loading, awaitItem())
+                assertEquals(RATE_FROM_NET, (awaitItem() as Resource.Success).data)
             }
         }
 
@@ -62,8 +62,8 @@ internal class RateRepositoryTest {
 
             repos.reloadRate()
             repos.exchangeRate.testFlow {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.success(RATE_FROM_NET), awaitItem())
+                assertEquals(Resource.Loading, awaitItem())
+                assertEquals(RATE_FROM_NET, (awaitItem() as Resource.Success).data)
             }
         }
 
@@ -74,8 +74,8 @@ internal class RateRepositoryTest {
             coEvery { dao.insertExchangeRates(any()) } just Runs
 
             repos.exchangeRate.testFlow {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.success(RATE_FROM_NET), awaitItem())
+                assertEquals(Resource.Loading, awaitItem())
+                assertEquals(RATE_FROM_NET, (awaitItem() as Resource.Success).data)
             }
         }
 
@@ -85,8 +85,8 @@ internal class RateRepositoryTest {
             coEvery { service.getDailyRate() } returns remoteError()
 
             repos.exchangeRate.testFlow {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.Status.ERROR, awaitItem().status)
+                assertEquals(Resource.Loading, awaitItem())
+                assert(awaitItem() is Resource.Error)
             }
         }
     }
@@ -105,8 +105,8 @@ internal class RateRepositoryTest {
 
             repos.loadRates(count)
             repos.latestRates.testFlow {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.success(rates), awaitItem())
+                assertEquals(Resource.Loading, awaitItem())
+                assertEquals(rates, (awaitItem() as Resource.Success).data)
             }
         }
 
@@ -125,8 +125,8 @@ internal class RateRepositoryTest {
 
             repos.loadRates(count)
             repos.latestRates.testFlow(API_CALL_DELAY.toTimeout(count)) {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.success(rates), awaitItem())
+                assertEquals(Resource.Loading, awaitItem())
+                assertEquals(rates, (awaitItem() as Resource.Success).data)
             }
             coVerify(exactly = count) { dao.insertExchangeRates(any()) }
         }
@@ -141,8 +141,8 @@ internal class RateRepositoryTest {
 
             repos.loadRates(8)
             repos.latestRates.testFlow {
-                assertEquals(Resource.Status.LOADING, awaitItem().status)
-                assertEquals(Resource.Status.ERROR, awaitItem().status)
+                assertEquals(Resource.Loading, awaitItem())
+                assert(awaitItem() is Resource.Error)
             }
 
         }
