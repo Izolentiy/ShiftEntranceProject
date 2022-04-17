@@ -37,7 +37,7 @@ internal class RateRepositoryTest {
 
             repos.exchangeRate.testFlow {
                 assertEquals(Resource.Loading, awaitItem())
-                assertEquals(RATE_SAVED_BEFORE, (awaitItem() as Resource.Success).data)
+                assertEquals(Resource.Success(RATE_SAVED_BEFORE), awaitItem())
             }
         }
 
@@ -50,7 +50,7 @@ internal class RateRepositoryTest {
             repos.reloadRate()
             repos.exchangeRate.testFlow {
                 assertEquals(Resource.Loading, awaitItem())
-                assertEquals(RATE_FROM_NET, (awaitItem() as Resource.Success).data)
+                assertEquals(Resource.Success(RATE_FROM_NET), awaitItem())
             }
         }
 
@@ -63,7 +63,7 @@ internal class RateRepositoryTest {
             repos.reloadRate()
             repos.exchangeRate.testFlow {
                 assertEquals(Resource.Loading, awaitItem())
-                assertEquals(RATE_FROM_NET, (awaitItem() as Resource.Success).data)
+                assertEquals(Resource.Success(RATE_FROM_NET), awaitItem())
             }
         }
 
@@ -75,7 +75,7 @@ internal class RateRepositoryTest {
 
             repos.exchangeRate.testFlow {
                 assertEquals(Resource.Loading, awaitItem())
-                assertEquals(RATE_FROM_NET, (awaitItem() as Resource.Success).data)
+                assertEquals(Resource.Success(RATE_FROM_NET), awaitItem())
             }
         }
 
@@ -106,7 +106,7 @@ internal class RateRepositoryTest {
             repos.loadRates(count)
             repos.latestRates.testFlow {
                 assertEquals(Resource.Loading, awaitItem())
-                assertEquals(rates, (awaitItem() as Resource.Success).data)
+                assertEquals(Resource.Success(rates), awaitItem())
             }
         }
 
@@ -126,7 +126,7 @@ internal class RateRepositoryTest {
             repos.loadRates(count)
             repos.latestRates.testFlow(API_CALL_DELAY.toTimeout(count)) {
                 assertEquals(Resource.Loading, awaitItem())
-                assertEquals(rates, (awaitItem() as Resource.Success).data)
+                assertEquals(Resource.Success(rates), awaitItem())
             }
             coVerify(exactly = count) { dao.insertExchangeRates(any()) }
         }

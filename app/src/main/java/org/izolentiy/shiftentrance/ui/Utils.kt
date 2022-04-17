@@ -59,7 +59,7 @@ fun handleError(
             configureErrorTarget(
                 errorTarget = errorTarget,
                 message = getString(R.string.message_socket_timeout),
-                detail = ""
+                detail = getString(R.string.detail_socket_timeout)
             )
         }
         is IOException -> configureErrorTarget(

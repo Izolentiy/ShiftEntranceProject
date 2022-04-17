@@ -115,34 +115,28 @@ class CurrencyFragment : Fragment() {
                     actionTarget = buttonRetry,
                     requireContext()
                 )
-                Log.e(TAG, "handleResource: ${resource.error}")
                 handleError(resource.error, errorTarget)
                 buttonRetry.setOnClickListener {
                     val count = spinnerCount.selectedItem.toString().toInt()
-                    Log.e(TAG, "handleResource: $count")
                     viewModel.loadLatestRates(count)
                 }
             }
         }
-        val latestRates: List<ExchangeRate>?
-        val noDataText: String
-        when (resource) {
-            is Resource.Loading -> {
-                latestRates = null
-                noDataText = getString(R.string.loading_chart_data)
-            }
-            is Resource.Success -> {
-                latestRates = resource.data
-                noDataText = getString(R.string.no_char_data)
-            }
-            is Resource.Error -> {
-                latestRates = resource.data
-                noDataText = getString(R.string.error_chart_data)
-            }
-        }
         lineChart.apply {
-            lineChart.data = prepareData(context, requireArguments(), latestRates)
-            setNoDataText(noDataText)
+            when (resource) {
+                is Resource.Loading -> {
+                    data = prepareData(context, requireArguments(), null)
+                    setNoDataText(getString(R.string.loading_chart_data))
+                }
+                is Resource.Success -> {
+                    data = prepareData(context, requireArguments(), resource.data)
+                    setNoDataText(getString(R.string.no_char_data))
+                }
+                is Resource.Error -> {
+                    data = prepareData(context, requireArguments(), resource.data)
+                    setNoDataText("")
+                }
+            }
             invalidate()
         }
     }

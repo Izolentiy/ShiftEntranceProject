@@ -22,7 +22,8 @@
     <string name="message_unexpected">Unexpected response</string>
     <string name="message_unknown">Unknown error</string>
     <string name="detail_unknown">An unknown error occurred while loading data</string>
-    <string name="message_socket_timeout">Connection timeout</string>
+    <string name="message_socket_timeout">Connection error</string>
+    <string name="detail_socket_timeout">Connection timeout expired</string>
     <string name="retry_button">Retry</string>
 
     <string name="test_currency_name">Australian Dollar</string>

@@ -103,6 +103,7 @@ class CurrencyListFragment : Fragment() {
                     requireContext()
                 )
                 handleError(resource.error, errorTarget)
+                buttonRetry.setOnClickListener { viewModel.reloadData() }
                 root.isVisible = true
             } else {
                 root.isVisible = false
@@ -113,7 +114,7 @@ class CurrencyListFragment : Fragment() {
                 getString(R.string.empty_data)
             else getString(R.string.data_loaded, MESSAGE_FORMAT.format(rate.loaded))
 
-            showSnackBar(message, MESSAGE_TIMEOUT, false, rate)
+            showSnackBar(message, MESSAGE_TIMEOUT)
             adapter.submitList(rate.currencies)
         }
         when (resource) {
@@ -121,7 +122,7 @@ class CurrencyListFragment : Fragment() {
                 if (!viewModel.errorShowedOnce) {
                     viewModel.errorShowedOnce = true
                     val message = getString(R.string.unable_to_download)
-                    showSnackBar(message, Snackbar.LENGTH_INDEFINITE, true, rate)
+                    showErrorSnackBar(message, rate)
                 }
                 Log.e(TAG, "handleResource: ERROR")
             }
@@ -131,25 +132,27 @@ class CurrencyListFragment : Fragment() {
         binding.swipeRefreshLayout.isRefreshing = resource is Resource.Loading
     }
 
-    private fun showSnackBar(
-        string: String, time: Int,
-        isError: Boolean, rate: ExchangeRate?
-    ) {
-        val view = activity?.findViewById<View>(binding.root.id)!!
-        val snackbar: Snackbar = Snackbar.make(view, string, time)
-        displayedSnackbar = snackbar
+    private fun showSnackBar(string: String, time: Int) {
+        val view: View = activity?.findViewById(binding.root.id)!!
+        Snackbar.make(view, string, time)
+            .also { displayedSnackbar = it }
+            .show()
+    }
 
-        if (isError) snackbar.setAction("OK") {
-            if (rate?.currencies?.isNotEmpty() == true) {
-                val resId = R.string.local_data_loaded
-                val message = getString(resId, MESSAGE_FORMAT.format(rate.loaded))
-                showSnackBar(message, MESSAGE_TIMEOUT, false, rate)
-            } else {
-                val message = getString(R.string.empty_data)
-                showSnackBar(message, Snackbar.LENGTH_INDEFINITE, false, rate)
-            }
-        }
-        snackbar.show()
+    private fun showErrorSnackBar(string: String, rate: ExchangeRate?) {
+        val view: View = activity?.findViewById(binding.root.id)!!
+        Snackbar.make(view, string, Snackbar.LENGTH_INDEFINITE)
+            .also { displayedSnackbar = it }
+            .setAction("OK") {
+                if (rate?.currencies?.isNotEmpty() == true) {
+                    val resId = R.string.local_data_loaded
+                    val message = getString(resId, MESSAGE_FORMAT.format(rate.loaded))
+                    showSnackBar(message, MESSAGE_TIMEOUT)
+                } else {
+                    val message = getString(R.string.empty_data)
+                    showSnackBar(message, Snackbar.LENGTH_INDEFINITE)
+                }
+            }.show()
     }
 
     companion object {
