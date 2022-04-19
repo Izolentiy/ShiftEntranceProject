@@ -1,77 +1,63 @@
 package org.izolentiy.shiftentrance.ui
 
 import android.content.Context
-import android.view.View
-import android.widget.TextView
-import androidx.core.view.isVisible
-import okio.IOException
-import org.izolentiy.shiftentrance.R
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
+import android.graphics.drawable.Drawable
+import android.util.TypedValue
+import androidx.core.content.ContextCompat
+import org.izolentiy.shiftentrance.model.Currency
+import org.izolentiy.shiftentrance.model.ExchangeRate
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.text.SimpleDateFormat
+import java.util.*
 
-class ErrorTarget(
-    val messageTarget: TextView,
-    val detailTarget: TextView,
-    val actionTarget: View,
-    val context: Context
-)
+const val BASE_CURRENCY = "RUB"
+const val MESSAGE_TIMEOUT = 5000 // milliseconds
 
-fun configureErrorTarget(
-    errorTarget: ErrorTarget,
-    message: String, detail: String,
-    showAction: Boolean = true
-) = with(errorTarget) {
-    messageTarget.text = message
-    detailTarget.text = detail
-    actionTarget.isVisible = showAction
+// Chart dimensions TODO: Make it work with xml
+const val Y_OFFSET = 12f
+const val X_OFFSET = 16f
+const val CHART_TEXT_SIZE = 12f
+const val NO_DATA_TEXT_SIZE = 50f
+
+const val DETAIL_MARKER_OFFSET_MULTIPLIER = 1.2f
+
+const val CIRCLE_RADIUS = 5f
+const val CIRCLE_HOLE_RADIUS = 3f
+const val LINE_WIDTH = 3f
+const val BORDER_WIDTH = 0.6f
+
+const val TOP_EXTRA_OFFSET = 12f
+const val BOTTOM_EXTRA_OFFSET = 12f
+const val RIGHT_EXTRA_OFFSET = 25f
+
+const val LABEL_COUNT_X_AXIS = 7
+const val LABEL_COUNT_Y_AXIS = 14
+
+val CHART_DATE_FORMAT = SimpleDateFormat("dd MMM", Locale.ENGLISH)
+val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH)
+val MESSAGE_FORMAT = SimpleDateFormat("HH:mm dd.MM.yyyy XXX", Locale.ENGLISH)
+
+val SYMBOLS = DecimalFormatSymbols(Locale("en", "US"))
+val DISPLAY_FORMAT = DecimalFormat("#.##", SYMBOLS)
+
+fun Float.toStringDate(locale: Locale): String {
+    val format = SimpleDateFormat("dd MMM", locale)
+    return format.format(Date(this.toLong()))
 }
 
-fun handleError(
-    error: Throwable, errorTarget: ErrorTarget
-) = with(errorTarget.context) {
-    when (error) {
-        is HttpException -> {
-            when (error.code()) {
-                401 -> configureErrorTarget(
-                    errorTarget = errorTarget,
-                    message = getString(R.string.message_401),
-                    detail = getString(R.string.detail_401)
-                )
-                in (400 until 500) -> configureErrorTarget(
-                    errorTarget = errorTarget,
-                    message = getString(R.string.message_400_500),
-                    detail = getString(R.string.detail_400_500, error.code(), error.message())
-                )
-                in (500 until 600) -> configureErrorTarget(
-                    errorTarget = errorTarget,
-                    message = getString(R.string.message_500_600),
-                    detail = getString(R.string.detail_500_600, error.code(), error.message()),
-                    showAction = false
-                )
-                else -> configureErrorTarget(
-                    errorTarget = errorTarget,
-                    message = getString(R.string.message_unexpected),
-                    detail = error.message()
-                )
-            }
-        }
-        is SocketTimeoutException -> {
-            configureErrorTarget(
-                errorTarget = errorTarget,
-                message = getString(R.string.message_socket_timeout),
-                detail = getString(R.string.detail_socket_timeout)
-            )
-        }
-        is IOException -> configureErrorTarget(
-            errorTarget = errorTarget,
-            message = getString(R.string.message_no_internet),
-            detail = getString(R.string.detail_no_internet)
-        )
-        else -> configureErrorTarget(
-            errorTarget = errorTarget,
-            message = getString(R.string.message_unknown),
-            detail = getString(R.string.detail_unknown)
-        )
-    }
-
+fun resolveColor(context: Context, attr: Int): Int {
+    val colorResId = TypedValue().apply {
+        context.theme.resolveAttribute(attr, this, true)
+    }.resourceId
+    return ContextCompat.getColor(context, colorResId)
 }
+
+fun resolveDrawable(context: Context, attr: Int): Drawable? {
+    val drawableResId = TypedValue().apply {
+        context.theme.resolveAttribute(attr, this, true)
+    }.resourceId
+    return ContextCompat.getDrawable(context, drawableResId)
+}
+
+data class FocusedEditTextId(var value: Int)

@@ -9,7 +9,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
-import org.izolentiy.shiftentrance.*
+import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.model.ExchangeRate
 
 fun configureLineChart(lineChart: LineChart) {

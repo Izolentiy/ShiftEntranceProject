@@ -4,6 +4,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.izolentiy.shiftentrance.model.Currency
 import org.izolentiy.shiftentrance.model.ExchangeRate
+import org.izolentiy.shiftentrance.ui.DATE_FORMAT
 import retrofit2.Response
 import java.util.*
 

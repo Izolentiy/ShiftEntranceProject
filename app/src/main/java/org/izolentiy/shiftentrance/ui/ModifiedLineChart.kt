@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import com.github.mikephil.charting.charts.LineChart
-import org.izolentiy.shiftentrance.DETAIL_MARKER_OFFSET_MULTIPLIER
 
 class ModifiedLineChart(context: Context, attrs: AttributeSet) : LineChart(context, attrs) {
     var detailMarkerView: DetailMarkerView? = null

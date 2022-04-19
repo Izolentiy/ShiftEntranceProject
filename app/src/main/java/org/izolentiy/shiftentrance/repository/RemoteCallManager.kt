@@ -1,8 +1,6 @@
 package org.izolentiy.shiftentrance.repository
 
 import kotlinx.coroutines.delay
-import org.izolentiy.shiftentrance.API_CALL_DELAY
-import org.izolentiy.shiftentrance.API_CALL_PER_SECOND
 import retrofit2.HttpException
 import retrofit2.Response
 

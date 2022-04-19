@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.izolentiy.shiftentrance.BASE_CURRENCY
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.model.Currency
 import org.izolentiy.shiftentrance.databinding.ItemCurrencyBinding as Binding

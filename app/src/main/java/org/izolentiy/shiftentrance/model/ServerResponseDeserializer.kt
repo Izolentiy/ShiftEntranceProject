@@ -3,10 +3,11 @@ package org.izolentiy.shiftentrance.model
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import org.izolentiy.shiftentrance.DATE_FORMAT
+import org.izolentiy.shiftentrance.ui.DATE_FORMAT
 import java.lang.reflect.Type
 
 class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
+
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
@@ -30,14 +31,14 @@ class ServerResponseDeserializer : JsonDeserializer<ExchangeRate> {
         }
 
         // See explanation below
-        val urlWithExtraSymbols = data.get("PreviousURL").asString
-            .replace("/", "//") // <- this have to be used now
+//        val urlWithExtraSymbols = data.get("PreviousURL").asString
+//            .replace("/", "//") // <- this have to be used now
 
         return ExchangeRate(
             date = DATE_FORMAT.parse(data.get("Date").asString)!!,
             previousDate = DATE_FORMAT.parse(data.get("PreviousDate").asString)!!,
-//            previousURL = data.get("PreviousURL").asString, // <- works not on all devices
-            previousURL = urlWithExtraSymbols,
+            previousURL = data.get("PreviousURL").asString,
+//            previousURL = urlWithExtraSymbols,
             timestamp = data.get("Timestamp").asString,
             currencies = currencies
         )

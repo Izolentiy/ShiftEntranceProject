@@ -3,7 +3,6 @@ package org.izolentiy.shiftentrance.ui
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.kakao.common.utilities.getResourceString
-import org.izolentiy.shiftentrance.BASE_CURRENCY
 import org.izolentiy.shiftentrance.MainActivity
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.screen.CurrencyItem

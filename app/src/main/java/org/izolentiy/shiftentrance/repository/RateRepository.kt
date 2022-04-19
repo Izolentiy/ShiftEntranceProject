@@ -3,8 +3,8 @@ package org.izolentiy.shiftentrance.repository
 import android.util.Log
 import kotlinx.coroutines.flow.*
 import okio.IOException
-import org.izolentiy.shiftentrance.CHART_DATE_FORMAT
 import org.izolentiy.shiftentrance.model.ExchangeRate
+import org.izolentiy.shiftentrance.ui.CHART_DATE_FORMAT
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 import java.util.*

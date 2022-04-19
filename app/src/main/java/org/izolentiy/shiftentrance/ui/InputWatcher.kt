@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
-import org.izolentiy.shiftentrance.FocusedEditTextId
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyBinding
 
 class InputWatcher(
@@ -37,7 +36,7 @@ class InputWatcher(
             val calculate = {
                 val value = input.toFloat()
                 viewModel.baseSum.value =
-                    if (editText.id == binding.editTextBaseCurrency.id) value
+                    if (editText.id == binding.layoutConverter.editTextBaseCurrency.id) value
                     else value * rate.toFloat()
             }
 

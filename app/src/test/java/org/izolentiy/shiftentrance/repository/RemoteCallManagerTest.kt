@@ -3,7 +3,6 @@ package org.izolentiy.shiftentrance.repository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
-import org.izolentiy.shiftentrance.API_CALL_DELAY
 import org.izolentiy.shiftentrance.toTimeout
 import org.junit.jupiter.api.Test
 import retrofit2.Response
