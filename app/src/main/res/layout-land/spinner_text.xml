@@ -7,4 +7,4 @@
     android:paddingStart="16dp"
     android:paddingEnd="0dp"
     android:singleLine="true"
-    android:textSize="@dimen/port_spinner_text_size" />
+    android:textSize="@dimen/land_secondary_text_size" />

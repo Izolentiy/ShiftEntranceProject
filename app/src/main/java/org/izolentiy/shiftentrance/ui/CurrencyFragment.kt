@@ -2,7 +2,6 @@ package org.izolentiy.shiftentrance.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +14,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import org.izolentiy.shiftentrance.BASE_CURRENCY
-import org.izolentiy.shiftentrance.DISPLAY_FORMAT
-import org.izolentiy.shiftentrance.FocusedEditTextId
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyBinding
 import org.izolentiy.shiftentrance.model.ExchangeRate
@@ -56,13 +52,15 @@ class CurrencyFragment : Fragment() {
                 view.clearFocus()
             }
 
-            textViewBaseCurrency.text = BASE_CURRENCY
-            textViewSelectedCurrency.text = charCode
+            with(layoutConverter) {
+                textViewBaseCurrency.text = BASE_CURRENCY
+                textViewSelectedCurrency.text = charCode
 
-            configureSpinner(spinnerCount)
+                configureSpinner(spinnerCount)
 
-            configureEditText(editTextBaseCurrency)
-            configureEditText(editTextSelectedCurrency)
+                configureEditText(editTextBaseCurrency)
+                configureEditText(editTextSelectedCurrency)
+            }
 
             configureLineChart(lineChart)
 
@@ -81,7 +79,7 @@ class CurrencyFragment : Fragment() {
             val selText = if (selected != 0.0f) DISPLAY_FORMAT.format(selected) else ""
             val baseText = if (base != 0.0f) DISPLAY_FORMAT.format(base) else ""
 
-            with(binding) {
+            with(binding.layoutConverter) {
                 when (focusedEditTextId.value) {
                     editTextSelectedCurrency.id ->
                         editTextBaseCurrency.setText(baseText)
@@ -109,15 +107,15 @@ class CurrencyFragment : Fragment() {
 
         with(layoutError) {
             if (resource is Resource.Error) {
-                val errorTarget = ErrorTarget(
+                ErrorTarget(
                     messageTarget = textViewErrorMessage,
                     detailTarget = textViewErrorDetail,
                     actionTarget = buttonRetry,
                     requireContext()
-                )
-                handleError(resource.error, errorTarget)
+                ).handleError(resource.error)
+
                 buttonRetry.setOnClickListener {
-                    val count = spinnerCount.selectedItem.toString().toInt()
+                    val count = layoutConverter.spinnerCount.selectedItem.toString().toInt()
                     viewModel.loadLatestRates(count)
                 }
             }

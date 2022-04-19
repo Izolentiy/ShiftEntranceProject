@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/fragment_currency">
+
+    <TextView
+        android:id="@+id/text_view_selected_currency"
+        style="@style/TextPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/land_margin"
+        android:layout_marginTop="@dimen/port_margin"
+        android:textSize="@dimen/land_primary_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="USD" />
+
+    <TextView
+        android:id="@+id/text_view_base_currency"
+        style="@style/TextPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/land_margin"
+        android:layout_marginTop="@dimen/land_margin"
+        android:textSize="@dimen/land_primary_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_selected_currency"
+        tools:text="RUB" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/char_code_end_barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="text_view_base_currency, text_view_selected_currency" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_text_selected_currency"
+        style="@style/TextPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/land_margin"
+        android:layout_marginEnd="@dimen/land_margin"
+        android:hint="@string/enter_sum_hint"
+        android:imeOptions="flagNoExtractUi"
+        android:inputType="numberDecimal"
+        android:textSize="@dimen/land_primary_text_size"
+        app:layout_constraintBaseline_toBaselineOf="@id/text_view_selected_currency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_selected_currency"
+        tools:text="1" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_text_base_currency"
+        style="@style/TextPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/land_margin"
+        android:layout_marginEnd="@dimen/land_margin"
+        android:hint="@string/enter_sum_hint"
+        android:imeOptions="flagNoExtractUi"
+        android:inputType="numberDecimal"
+        android:textSize="@dimen/land_primary_text_size"
+        app:layout_constraintBaseline_toBaselineOf="@id/text_view_base_currency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_view_base_currency"
+        tools:text="111.48" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/converter_barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="edit_text_base_currency, edit_text_selected_currency,
+                    text_view_selected_currency, text_view_base_currency" />
+
+    <TextView
+        android:id="@+id/text_view_rates_to_display"
+        style="@style/TextPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/land_margin"
+        android:text="@string/rates_to_display"
+        android:textSize="@dimen/land_secondary_text_size"
+        app:layout_constraintBaseline_toBaselineOf="@id/spinner_count"
+        app:layout_constraintEnd_toStartOf="@id/spinner_count"
+        app:layout_constraintTop_toBottomOf="@id/converter_barrier" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/spinner_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/converter_barrier"
+        tools:listitem="@layout/spinner_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

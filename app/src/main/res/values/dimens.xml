@@ -6,4 +6,11 @@
     <dimen name="marker_detail_corner_radius">12dp</dimen>
     <dimen name="round_marker_diameter">10dp</dimen>
     <dimen name="round_marker_stroke_width">3dp</dimen>
+
+    <dimen name="port_margin">12dp</dimen>
+    <dimen name="port_spinner_text_size">16sp</dimen>
+
+    <dimen name="land_primary_text_size">14sp</dimen>
+    <dimen name="land_secondary_text_size">12sp</dimen>
+    <dimen name="land_margin">6dp</dimen>
 </resources>

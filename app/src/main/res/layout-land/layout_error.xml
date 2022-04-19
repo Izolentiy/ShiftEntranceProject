@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_error"
@@ -19,12 +20,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textSize="@dimen/land_primary_text_size"
         android:gravity="center"
         tools:text="Unable to load images" />
 
     <TextView
         android:id="@+id/text_view_error_detail"
         style="@style/TextSecondary"
+        android:textSize="@dimen/land_secondary_text_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

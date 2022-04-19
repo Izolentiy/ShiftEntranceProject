@@ -26,20 +26,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
-            android:id="@+id/converter_frame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <include
-                android:id="@+id/layout_converter"
-                layout="@layout/layout_converter" />
-
-        </FrameLayout>
-
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -51,14 +37,15 @@
 
         <org.izolentiy.shiftentrance.ui.ModifiedLineChart
             android:id="@+id/line_chart"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/port_margin"
-            android:layout_marginBottom="@dimen/port_margin"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/land_margin"
+            android:layout_marginBottom="@dimen/land_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/converter_frame" />
+            app:layout_constraintStart_toEndOf="@+id/converter_frame"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="0.65" />
 
         <FrameLayout
             android:id="@+id/error_frame"
@@ -67,12 +54,26 @@
             app:layout_constraintBottom_toBottomOf="@id/line_chart"
             app:layout_constraintEnd_toEndOf="@id/line_chart"
             app:layout_constraintStart_toStartOf="@id/line_chart"
-            app:layout_constraintTop_toTopOf="@id/line_chart"
-            app:layout_constraintVertical_bias="0.35">
+            app:layout_constraintTop_toTopOf="@id/line_chart">
 
             <include
                 android:id="@+id/layout_error"
                 layout="@layout/layout_error" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/converter_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/line_chart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="0.35">
+
+            <include
+                android:id="@+id/layout_converter"
+                layout="@layout/layout_converter" />
 
         </FrameLayout>
 

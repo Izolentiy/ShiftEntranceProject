@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import org.izolentiy.shiftentrance.MESSAGE_FORMAT
-import org.izolentiy.shiftentrance.MESSAGE_TIMEOUT
 import org.izolentiy.shiftentrance.R
 import org.izolentiy.shiftentrance.databinding.FragmentCurrencyListBinding
 import org.izolentiy.shiftentrance.model.Currency
@@ -96,13 +94,13 @@ class CurrencyListFragment : Fragment() {
         }
         with(binding.layoutError) {
             if (resource is Resource.Error && rate == null) {
-                val errorTarget = ErrorTarget(
+                ErrorTarget(
                     messageTarget = textViewErrorMessage,
                     detailTarget = textViewErrorDetail,
                     actionTarget = buttonRetry,
                     requireContext()
-                )
-                handleError(resource.error, errorTarget)
+                ).handleError(resource.error)
+
                 buttonRetry.setOnClickListener { viewModel.reloadData() }
                 root.isVisible = true
             } else {
